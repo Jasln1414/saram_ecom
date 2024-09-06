@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    /* Ensure the full section and its direct parents are set to 100vh */
+.checkout {
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch; /* Stretches children to fill height */
+}
+
+/* Ensures the row takes the full height */
+.container-fluid,
+.row {
+    height: 100%;
+    margin: 0; /* Remove any default margins that could affect layout */
+}
+
+/* Sidebar navigation taking full height */
+.path {
+    flex: 1; /* Makes it flexible to take available height */
+    min-height: 100vh; /* Full height of the viewport */
+    background: #f8f9fa; /* Light background for distinction */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Aligns content from the top */
+    border-right: 1px solid #ddd; /* Optional: adds a border to separate the sidebar */
+    position: sticky; /* Keeps the sidebar fixed within the viewport height */
+    top: 0;
+    overflow-y: auto; /* Adds scroll if content overflows */
+    height: 100px;
+}
+
+/* General styles for links and content */
+.path .l a,
+.path a {
+    font-size: 18px;
+    margin-bottom: 10px;
+    display: block;
+    color: inherit; /* Ensures default link color */
+
+}
+
+/* Optional: Style adjustments for spacing */
+.path p {
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Make sure the content section also takes full height */
+.col-lg-8 {
+    flex: 1;
+    padding: 20px;
+}
+
+
+
+    .checkout__form__input input[type="date"] {
+        cursor: pointer;
+    }
+
+    /* Change cursor for gender radio buttons */
+    .gender-inputs input[type="radio"] {
+        cursor: pointer;
+    }
+
+    .align-right-btn {
+        float: right;
+    }
+
+    .order_table img {
+        width: 50px;
+        height: 70px;
+        border-radius: 7px;
+    }
+
+    @media (max-width: 768px) {
+        .path {
+            font-size: 16px;
+        }
+
+        .path a {
+            margin-bottom: 10px;
+        }
+
+        .order_table table {
+            width: 100%;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .order_table th, .order_table td {
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .path {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .path a {
+            display: block;
+        }
+
+        .order_table img {
+            width: 40px;
+            height: 60px;
+        }
+
+        .order_table th, .order_table td {
+            font-size: 12px;
+        }
+
+        .order_table td {
+            display: block;
+            text-align: center;
+        }
+
+        .order_table tr {
+            display: block;
+            margin-bottom: 10px;
+        }
+    }
+    .path {
+    height: 100px; /* Set the desired height */
+    overflow: hidden; /* Hide content that overflows */
+    /* Alternatively, use 'scroll' if you want scrollbars: */
+    /* overflow-y: scroll; */
+    
+    /* Optional: Add padding or margins if needed */
+    padding: 10px;
+    margin: 10px;
+}
+
+</style>
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'index' %}"><i class="fa fa-home"></i> Home</a>
+                    <a href="{% url 'view_all_order' %}"><i></i>My Orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Personal info Section Begin -->
+<section class="checkout spad">
+    <div class="container">
+        <form action="#" class="checkout__form">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="path">
+                        <div class="l">
+                            <a href="{% url 'profile' %}">Personal Information</a>
+                        </div>
+                        <p class="text-secondary text-muted">_________________________________________</p>
+                        <div>
+                            <a href="{% url 'view_all_order' %}" style="color: red;">My Orders</a>
+                        </div>
+                        <p class="text-secondary text-muted">_________________________________________</p>
+                        <div>
+                            <a href="{% url 'address' %}">Address</a>
+                        </div>
+                        <p class="text-secondary text-muted">_________________________________________</p>
+                        <div>
+                            <a href="{% url 'wallet_view' %}" style="color: red;">Wallet</a>
+                        </div>
+                        <p class="text-secondary text-muted">_________________________________________</p>
+                    </div>
+                </div>
+        
+                <div class="col-lg-8">
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+                    <script>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                        {% elif message.tags == 'success' %}
+                        swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                        {% else %}
+                        swal("Message", "{{ message }}"); // Display general message
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </script>
+                    <br>
+
+
+            <h5 class="d-flex justify-content-center">MY ORDERS</h5>
+                    <div class="row">
+                        <div class="col-lg-12 order_table">
+                            <!-- Table containing order details -->
+                            {% if items %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Product Name</th>
+                                        <th>Price</th>
+                                        <th>Size</th>
+                                        <th>Total</th>
+                                        <th>Quantity</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    {% for i in items %}
+                                    <tr>
+                                        <td><img src="{{ i.product.image1.url }}" alt=""></td>
+                                        <td>{{ i.product.product.name }}</td>
+                                        <td style="color: red;">₹{{ i.each_price }}</td>
+                                        
+                                        <td>{{ i.size }}</td>
+                                        
+                                        <td style="color: red;">₹{{ i.order.total }}</td>
+                                        <td>{{ i.qty }}</td>
+                                        <td>
+                                            <a href="{% url 'view_status' i.pk %}">
+                                                <div class="btn btn-outline-primary">Status</div>
+                                            </a>
+                                            
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            {% else %}
+                            <div class="d-flex justify-content-center">
+                                <h5><b>YOU HAVEN'T ORDERED ANY PRODUCTS YET.</b></h5>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <br><br>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- Personal info Section End -->
+
+{% endblock content %}

@@ -1,0 +1,145 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+{% block title %}
+<title>Add Product</title>
+{% endblock title %}
+
+{% block style %}
+<style>
+    .text-nowrap {
+        white-space: nowrap !important;
+        padding-top: 24px;
+    }
+
+    input {
+        width: 100px;
+    }
+</style>
+{% endblock style %}
+
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row ">
+        <div class="col-lg-12">
+            <form action="{% url 'add_product' %}" method='post' enctype="multipart/form-data">
+                {% csrf_token %}
+                <br><br>
+
+                <div>
+                    <label for="exampleInputPrice" class="form-label">Name</label>
+                    <input type="text" required autocomplete="off" class="form-control"
+                        onkeydown="moveToNext(event, 'exampleInputCategory')" name="name" placeholder="Product name"
+                        id="exampleInputPrice">
+                </div>
+                <br><br>
+
+                <div>
+                    <label for="exampleInputCategory" class="form-label">Category</label>
+                    <select name="category" required id="id_category" class="form-control"
+                        onkeydown="moveToNext(event, 'exampleInputType')">
+                        <option value="" selected>Select</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <br><br>
+                <div>
+                    <label for="exampleInputType" class="form-label ">Type</label>
+                    <input type="text" required autocomplete="off" class="form-control"
+                        onkeydown="moveToNext(event, 'productBrand')" name="type" placeholder="eg : Shirt, T-shirt ..." id="exampleInputType">
+                </div>
+                <br><br>
+                <div class="form-group">
+                    <label for="productBrand">Brand</label>
+                    <select name="brand" id="productBrand" class="form-control">
+                        <option value="">Choose Brand</option>
+                        {% for brand in brands %}
+                            <option value="{{ brand.pk }}" >
+                                {{ brand.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <br><br>
+                <div>
+                    <label for="exampleInputPrice" class="form-label ">New Price</label>
+                    <input type="number" required autocomplete="off" class="form-control"
+                        onkeydown="moveToNext(event, 'exampleInputPercentage')" name="price" placeholder="₹"
+                        id="exampleInputPrice">
+                </div>
+                <br><br>
+                <div>
+
+                    <label for="exampleInputPercentage" class="form-label ">Offer percentage </label>
+                    <input type="number" autocomplete="off" class="form-control"
+                        oninput="toggleExpiryDateVisibility()" onkeydown="moveToNext(event, 'exampleInputDescription')" name="percentage" placeholder="%"
+                        id="exampleInputPercentage">
+                </div>
+                <br><br>
+                <div id="expiryDateField">
+                    <label for="exampleInputExp_date" class="form-label ">Expiry Date </label>
+                    <input type="date" autocomplete="off" class="form-control"
+                        name="exp_date" placeholder="DD/MM/YY"
+                        id="exampleInputExp_date">
+                </div>
+                <br><br>
+
+                <div class="mb-3">
+                    <label for="exampleInputDescription" class="form-label ">Description</label>
+                    <textarea class="form-control" autocomplete="off" id="exampleInputDescription" name="description"
+                        placeholder="Description" rows="7"></textarea>
+                </div>
+                <br><br>
+                <button type="submit" class="btn btn-primary d-flex justify-content-end">Add Product</button>
+            </form>
+            <br>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                {% elif message.tags == 'success' %}
+                swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                {% else %}
+                swal("Message", "{{ message }}"); // Display general message
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </script>
+            <br />
+        </div>
+    </div>
+</div>
+<script>
+    function moveToNext(event, nextInputId) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            var nextInput = document.getElementById(nextInputId);
+            if (nextInput) {
+                nextInput.focus();
+            }
+        }
+    }
+
+    function toggleExpiryDateVisibility() {
+        var percentageInput = document.getElementById('exampleInputPercentage');
+        var expiryDateField = document.getElementById('expiryDateField');
+        if (percentageInput.value.trim() === '') {
+            expiryDateField.style.display = 'none';
+        } else {
+            expiryDateField.style.display = 'block';
+        }
+    }
+
+    // Initialize the visibility state on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleExpiryDateVisibility();
+    });
+</script>
+
+{% endblock content %}

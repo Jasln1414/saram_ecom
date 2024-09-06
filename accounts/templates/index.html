@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Style+Script&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+<title>Bootstrap Example</title>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+
+.container {
+        width: 100%;
+        max-width: 90%; /* Adjust to a smaller value if needed */
+        margin: 0 auto;
+        padding: 10px; /* Reduce padding if needed */
+    }
+    
+  .title {
+    font-family: 'Style Script', cursive !important;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .carousel-item {
+    position: relative;
+  }
+
+  .carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+  }
+
+  .carousel-caption h5 {
+    font-size: 2em;
+    font-weight: bold;
+  }
+
+  .carousel-caption p {
+    font-size: 1.2em;
+  }
+
+  .carousel-caption .price {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  
+  .banner_image {
+    height: 430px !important;
+  }
+
+  .carousel-item img {
+    width: 100%;
+    height: 405px;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 5%;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  * {
+    font-family: "Montserrat", sans-serif;
+  }
+</style>
+
+<!-- Categories Section Begin -->
+<section class="categories">
+  <div class="container">
+    <div class="row">
+      <!-- Carousel Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden text-dark">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden text-dark">Next</span>
+      </button>
+    </div>
+  </div>
+</section>
+<!-- Categories Section End -->
+
+<!-- Product Section Begin -->
+<section class="product spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-4">
+        <div class="section-title text-center">
+          <h4>New Products</h4>
+        </div>
+      </div>
+      <br>
+      <div class="col-lg-8 col-md-8">
+        <ul class="filter__controls">
+          <li class="active" data-filter="*">All</li>
+          <li data-filter=".women">Women's</li>
+          <li data-filter=".men">Men's</li>
+          <li data-filter=".kid">Kid's</li>
+          <li data-filter=".accessories">Accessories</li>
+          <li data-filter=".cosmetic">Cosmetics</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row property__gallery">
+      {% for color in products_color %}
+      <div class="col-lg-3 col-md-4 col-sm-6 mix men women kid">
+        <div class="product__item">
+          <div class="product__item__pic set-bg">
+            {% if color.is_listed and color.product.category.is_listed %}
+            <!-- Optionally add some content or classes when the product is listed -->
+            {% else %}
+            <div class="label new" style="background-color: red;">Out Of Stock</div>
+            {% endif %}
+            <a href="{% url 'product_detail' color.id %}"><img src="{{ color.image1.url }}" alt=""></a>
+            <ul class="product__hover">
+              <li>
+                <a href="{{color.image1.url}}" class="image-popup"><span class="arrow_expand"></span></a>
+              </li>
+              <li>
+                <a href="#"><span class="icon_heart_alt"></span></a>
+              </li>
+            </ul>
+          </div>
+    
+          <div class="product__item__text">
+            <h6><a href="{% url 'product_detail' color.id %}">{{color.product.name }}</a></h6>
+            <div class="rating">
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+              <i class="fa fa-star"></i>
+            </div>
+            <!-- Display the price -->
+            <div class="product__price">
+              ${{ color.product.price }}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+</section>
+<!-- Product Section End -->
+
+<!-- Discount Section Begin -->
+<section class="discount">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 p-0">
+        <div class="discount__pic">
+          <img src="{% static 'img/discount.jpg' %}" alt="" />
+        </div>
+      </div>
+      <div class="col-lg-6 p-0">
+        <div class="discount__text">
+          <div class="discount__text__title">
+            <span>Discount</span>
+            <h2>Summer 2019</h2>
+            <h5><span>Sale</span> 50%</h5>
+          </div>
+          <div class="discount__countdown" id="countdown-time">
+            <div class="countdown__item">
+              <span>22</span>
+              <p>Days</p>
+            </div>
+            <div class="countdown__item">
+              <span>18</span>
+              <p>Hour</p>
+            </div>
+            <div class="countdown__item">
+              <span>46</span>
+              <p>Min</p>
+            </div>
+            <div class="countdown__item">
+              <span>05</span>
+              <p>Sec</p>
+            </div>
+          </div>
+          <a href="#">Shop now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Discount Section End -->
+
+<!-- Services Section Begin -->
+<section class="services spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="services__item">
+          <i class="fa fa-car"></i>
+          <h6>Free Shipping</h6>
+          <p>For all orders over $99</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="services__item">
+          <i class="fa fa-money"></i>
+          <h6>Money Back Guarantee</h6>
+          <p>If goods have problems</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="services__item">
+          <i class="fa fa-support"></i>
+          <h6>Online Support 24/7</h6>
+          <p>Dedicated support</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="services__item">
+          <i class="fa fa-headphones"></i>
+          <h6>Payment Secure</h6>
+          <p>100% secure payment</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Services Section End -->
+
+{% endblock content %}

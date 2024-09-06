@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    a {
+        text-decoration: none;
+    }
+
+    video {
+        position: absolute;
+        margin-left: 206px;
+    }
+</style>
+
+<link rel="stylesheet" href="{% static 'css/track.css' %}">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Bootstrap Bundle JS (includes Popper.js) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="container-fluid my-5 d-sm-flex justify-content-center">
+    <div class="card px-2">
+        <div class="card-header bg-white">
+            <div class="row justify-content-between">
+                <div class="col">
+                </div>
+                <div class="flex-col my-auto">
+                    <h6 class="ml-auto mr-3">
+                    </h6>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="media flex-column flex-sm-row">
+                <div class="media-body">
+                    <h6 class="bold">{{ order_items.product.product.name }}</h6>
+                    <p class="text-muted"><b>Qt</b>: {{ order_items.qty }}</p>
+                    <h4 class="mt-3 mb-4 bold">
+                        <span class="mt-5">&#x20B9;</span>
+                        {{ total_price }}
+                        {% if order_items.order.shipping_charge %}
+                            + ₹{{ order_items.order.shipping_charge }}
+                        {% endif %}
+                        <span class="small text-muted"> via ({{ order_items.order.payment_method }})</span>
+                    </h4>
+                    <p class="text-muted">Tracking Status on: <span id="current-time"></span>, Today</p>
+                </div>
+                <img class="align-self-center img-fluid" style="border-radius: 29px;" src="{{ order_items.product.image1.url }}" width="180" height="180">
+            </div>
+            <div class="active">
+                {% if order_items.status == 'Pending' %}
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #FFA500; border-radius: 50%;"></div>
+                        <h5>Pending</h5>
+                        <video width="100" height="100" autoplay loop muted>
+                            <source src="#" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Order Placed</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Shipped</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Out for Delivery</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Delivered</h5>
+                    </div>
+                {% elif order_items.status == 'Order Placed' %}
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Order Placed</h5>
+                        <video width="100" height="100" autoplay loop muted>
+                            <source src="#" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Shipped</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Out for Delivery</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Delivered</h5>
+                    </div>
+                {% elif order_items.status == 'Shipped' %}
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Order Placed</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #009608; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Shipped</h5>
+                        <video width="100" height="100" autoplay loop muted>
+                            <source src="#" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Out for Delivery</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Delivered</h5>
+                    </div>
+                {% elif order_items.status == 'Out for Delivery' %}
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Order Placed</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #009608; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Shipped</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #009608; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Out for Delivery</h5>
+                        <video width="100" height="100" autoplay loop muted>
+                            <source src="#" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #b0b8c1; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #b0b8c1; border-radius: 50%;"></div>
+                        <h5>Delivered</h5>
+                    </div>
+                {% elif order_items.status == 'Delivered' %}
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Order Placed</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #009608; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Shipped</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #009608; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Out for Delivery</h5>
+                    </div>
+                    <div class="track_line" style="width: 2px; height: 100px; background-color: #009608; margin-left: 9px;"></div>
+                    <div class="track-step">
+                        <div class="track_dot" style="width: 20px; height: 20px; background-color: #009608; border-radius: 50%;"></div>
+                        <h5>Delivered</h5>
+                        <video width="100" height="100" autoplay loop muted>
+                            <source src="#" type="video/mp4">
+                        </video>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentTime = new Date().toLocaleTimeString();
+        document.getElementById('current-time').innerText = currentTime;
+    });
+</script>
+
+{% endblock %}

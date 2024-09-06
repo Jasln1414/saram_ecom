@@ -1,0 +1,116 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+
+{% block title %}
+<title>Product Image</title>
+{% endblock title %}
+
+
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row ">
+    <div class="col-lg-12">
+        <form action="" method='post' enctype="multipart/form-data">
+            {% csrf_token %}
+            <br><br>
+            <div>
+                <label for="exampleInputProduct" class="form-label">Product</label>
+                <select name="product" required id="id_product" class="form-control"
+                    onkeydown="moveToNext(event, 'exampleInputColor')">
+                    <option value="" selected>Select</option>
+                    {% for product in products %}
+                    <option value="{{ product.id }}">{{ product.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <div>
+                <label for="exampleInputPrice" class="form-label ">Color</label>
+                <input type="text" required autocomplete="off" class="form-control"
+                    onkeydown="moveToNext(event, 'exampleInputCategory')" name="color" placeholder="Color name" id="exampleInputColor" >
+            </div>
+            <br>
+
+        
+            <div class="mb-3 mb-5 d-flex justify-content-between">
+                <div>
+                    <label for="exampleInputImage1" class="form-label">Add Image 1</label>
+                    <input required type="file" class="form-control" name="image1" id="exampleInputImage1" onchange="previewImage(this, 'imagePreview1')">
+                    <img id="imagePreview1" src="#" alt="Uploaded Image" style="display:none; max-width: 200px; max-height: 200px; border-radius: 7px; ">
+                </div>
+                <div>
+                    <label for="exampleInputImage2" class="form-label">Add Image 2</label>
+                    <input required type="file" class="form-control" name="image2" id="exampleInputImage2" onchange="previewImage(this, 'imagePreview2')">
+                    <img id="imagePreview2" src="#" alt="Uploaded Image" style="display:none; max-width: 200px; max-height: 200px; border-radius: 7px; ">
+                </div>
+                <div>
+                    <label for="exampleInputImage3" class="form-label ">Add Image 3</label>
+                    <input required type="file" class="form-control" name="image3" id="exampleInputImage3" onchange="previewImage(this, 'imagePreview3')">
+                    <img id="imagePreview3" src="#" alt="Uploaded Image" style="display:none; max-width: 200px; max-height: 200px; border-radius: 7px; ">
+                </div>
+                <div>
+                    <label for="exampleInputImage4" class="form-label">Add Image 4</label>
+                    <input required type="file" class="form-control" name="image4" id="exampleInputImage4" onchange="previewImage(this, 'imagePreview4')">
+                    <img id="imagePreview4" src="#" alt="Uploaded Image" style="display:none; max-width: 200px; max-height: 200px; border-radius: 7px; ">
+                </div>
+            </div>
+        
+            <br><br>        
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'product_image' %}"><button type="submit" class="btn btn-primary d-flex justify-content-end">Add Product Image</button></a>
+            </div>  
+
+        </form>
+        <div class="d-flex justify-content-end" style="font-size: large;margin-top: -36px;">
+        <div>
+            <a href="{% url 'product_size' %}"><button type="submit" class="btn btn-primary d-flex justify-content-end"><i class="fa-solid fa-angles-right"></i></button></a>
+
+        </div>
+        </div>
+
+        <br>
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <script>
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+            {% elif message.tags == 'success' %}
+            swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+            {% else %}
+            swal("Message", "{{ message }}"); // Display general message
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </script>
+            <br />
+            <br />
+        
+        <script>
+            function moveToNext(event, nextInputId) {
+                if (event.keyCode === 13) { 
+                    event.preventDefault(); 
+                    var nextInput = document.getElementById(nextInputId);
+                    if (nextInput) {
+                        nextInput.focus(); 
+                    }
+                }
+            }
+        
+            function previewImage(input, previewId) {
+                var reader = new FileReader();
+        
+                reader.onload = function (e) {
+                    var imgElement = document.getElementById(previewId);
+                    imgElement.src = e.target.result;
+                    imgElement.style.display = 'block';
+                };
+        
+                reader.readAsDataURL(input.files[0]);
+            }
+        </script>
+        
+{% endblock content %}

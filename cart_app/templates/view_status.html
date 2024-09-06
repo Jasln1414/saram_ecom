@@ -1,0 +1,517 @@
+<!-- Created with [AIPRM Prompt "Python Pro"](https://www.aiprm.com/prompts/softwareengineering/backend-development/2000110/) -->
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    a{
+        text-decoration: none;
+    }
+    video{
+        position: absolute;
+        margin-left: 206px;
+    }
+    .shiny-button {
+    background: linear-gradient(135deg, #f06, #f79); /* Gradient background */
+    border: none; /* Remove default border */
+    color: white; /* Text color */
+    font-size: 16px; /* Font size */
+    padding: 10px 20px; /* Padding for size */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+.shiny-button:hover {
+    background: linear-gradient(135deg, #f79, #f06); /* Reverse gradient on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+.shiny-button:active {
+    background: linear-gradient(135deg, #f06, #f79); /* Maintain gradient on click */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+    transform: translateY(0); /* Remove lift effect */
+}
+/* Basic form styling */
+form {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style form groups */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Style labels */
+.form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Style text inputs */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #95096b;
+    outline: none;
+}
+
+
+
+
+</style>
+
+<link rel="stylesheet" href="{% static 'css/track.css' %}">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!-- Bootstrap Bundle JS (includes Popper.js) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="container-fluid my-5 d-sm-flex justify-content-center">
+    <div class="card px-2">
+
+        <div class="card-header bg-white">
+            <div class="row justify-content-between">
+                <div class="col">
+
+
+                   <div class="d-flex justify-content-between ">
+                    <div class="div">
+                        <p class="text-muted"> Order ID : <span class="font-weight-bold text-dark">{{order_items.order.tracking_id}}</span></p>
+                    <p class="text-muted">Place On <span class="font-weight-bold text-dark">{{ order_items.created_at|date:"F d, Y" }}</span></p>
+                    </div>
+                    <div>
+                       {% if not order_items.request_cancel and not order_items.cancel and not order_items.request_return and not order_items.return_product and order_items.status == 'Delivered' %}
+                       <a href="{% url 'invoice' order_items.id %}" class="btn btn-success mr3" style="margin-top: 18px;width: 167px;"><i class="fa-solid fa-download"></i> Invoice</a>
+                       {% endif %}
+                    </div>
+                   </div>
+
+                </div>
+
+
+               <!-- payment_status.html -->
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="flex-col my-auto">
+                    <h6 class="ml-auto mr-3">
+                    </h6>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="media flex-column flex-sm-row">
+                <div class="media-body">
+                    <h6 class="bold">{{ order_items.product.product.name }}</h6>
+                    <p class="text-muted"> <b>Qt</b>: {{order_items.qty}} </p>
+                    <h4 class="mt-3 mb-4 bold"> <span class="mt-5">&#x20B9;</span>
+                        {{total_price}} {% if order_items.order.shipping_charge %} + ₹{{order_items.order.shipping_charge}} {% endif %}<span class="small text-muted"> via
+                            ({{order_items.order.payment_method}}) </span></h4>
+                    {% if order_items.order.payment_method == 'Razorpay' and order_items.order.payment_transaction_id  %}
+                    <div class="d-flex">
+                        <p><b>Transaction ID :</b> </p>
+                    <p>{{ order_items.order.payment_transaction_id }}</p>
+                    </div>
+                    {% endif %}
+                    <p class="text-muted">Tracking Status on: <span id="current-time"></span>, Today</p>
+                </div>
+                <img class="align-self-center img-fluid" style="border-radius: 29px;" src="{{order_items.product.image1.url}}" width="180 "
+                    height="180">
+            </div>
+            <div class="active">
+                {% if order_items.status == 'Order Placed' %}
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;">
+                    </div>
+                    <h5>Order Placed</h5><video width="100" height="100" autoplay loop muted>
+                        <source src="{% static 'img/van2.mp4' %}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Shipped</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Out of Delivery</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Delivered</h5>
+                </div>
+                {% elif order_items.status == 'Shipped' %}
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;">
+                    </div>
+                    <h5>Order Placed</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #009608;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;">
+                    </div>
+                    <h5>Shipped</h5><video width="100" height="100" autoplay loop muted>
+                        <source src="{% static 'img/van2.mp4' %}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Out of Delivery</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Delivered</h5>
+                </div>
+                {% elif order_items.status == 'Out for Delivery' %}
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;">
+                    </div>
+                    <h5>Order Placed</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #009608;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;">
+                    </div>
+                    <h5>Shipped</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #009608;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;">
+                    </div>
+                    <h5>Out of Delivery</h5><video width="100" height="100" autoplay loop muted>
+                        <source src="{% static 'img/van2.mp4' %}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Delivered</h5>
+                </div>
+                {% elif order_items.status == 'Delivered' %}
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;"></div>
+                    <h5>Order Placed</h5>
+                </div>
+
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #009608;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;"></div>
+                    <h5>Shipped</h5>
+                </div>
+
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #009608;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;"></div>
+                    <h5>Out of Delivery</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #009608;margin-left: 9px;">
+                </div>
+
+            
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #009608;border-radius: 50%;">
+                    </div>
+                    <h5>Delivered</h5><video  width="100" height="100" autoplay loop muted>
+                        <source src="{% static 'img/van2.mp4' %}" type="video/mp4">
+                    </video>
+                </div>
+                {% elif order_items.request_return == True and order_items.status == 'Returned' %}
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;"></div>
+                    <h5>Order Placed</h5>
+                </div>
+
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;"></div>
+                    <h5>Shipped</h5>
+                </div>
+
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;"></div>
+                    <h5>Out of Delivery</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+
+            
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Delivered</h5>
+                    
+                </div><br><h3>Your Order has been Returned.</h3>
+                {% else %}
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Order Placed</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Shipped</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Out of Delivery</h5>
+                </div>
+                <div class="track_line" style="width: 2px;height: 100px;background-color: #b0b8c1;margin-left: 9px;">
+                </div>
+                <div class="track-step">
+                    <div class="track_dot"
+                        style=" width: 20px;height: 20px;background-color: #b0b8c1;border-radius: 50%;">
+                    </div>
+                    <h5>Delivered</h5>
+                </div>
+               
+                {% endif %}
+            </div><br><br>      
+           
+            <img class="align-self-center img-fluid" style="border-radius: 29px;" src="{{order_items.product.image1.url}}" width="180" height="180" alt="Product image of {{order_items.product.product.name}}">
+
+
+            <div class="d-flex justify-content-center ">
+                {% if order_items.status == 'Order Placed' and not order_items.request_cancel %}
+                    <a href="#" id="cancelOrderBtn" class="btn btn-outline-warning">Cancel</a>
+                {% elif order_items.status == 'Returned' and order_items.return_product == True %}
+                    <h3>Your Order has been Returned.</h3>
+                {% elif order_items.status == 'Delivered' and order_items.request_return == True %}
+                    <button type="button" class="btn btn-primary" disabled>Return Requested</button>
+                {% elif order_items.status == 'Delivered' %}
+                    {% with delivery_date=order_items.created_at|date:"Y-m-d" %}
+                        {% with seven_days_ago=delivery_date|date:"Y-m-d"|add:"-7 days" %}
+                            {% if currentTime|date:"Y-m-d" >= seven_days_ago %}
+                                <!-- Button to show the return form -->
+                                <button id="showReturnFormBtn" class="btn btn-primary">Return</button>
+                        
+                                <!-- Return form, initially hidden -->
+                                <div id="returnForm" class="d-none">
+                                    <form method="POST" action="{% url 'request_return_product' order_items.id %}">
+                                        {% csrf_token %}
+                                        {{ form.as_p }} <!-- Display the form fields -->
+                        
+                                        <!-- Add dropdown for return reasons -->
+                                        <div class="form-group">
+                                            <label for="id_reason">Return Reason:</label>
+                                            <select id="id_reason" name="reason" class="form-control">
+                                                <option value="">Select a reason</option>
+                                                <option value="Damaged">Damaged</option>
+                                                <option value="Wrong Item">Wrong Item</option>
+                                                <option value="Not as Described">Not as Described</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                        
+                                        <button type="submit" class="btn btn-primary shiny-button">Submit Return Request</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    {% endwith %}
+                {% elif order_items.status == 'Shipped' %}
+                    <button type="button" class="btn btn-primary" disabled>You cannot Cancel after Shipped</button>
+                {% elif order_items.status == 'Cancelled' %}
+                    <h3>Your Order has been Cancelled.</h3>
+                {% elif order_items.request_cancel == True %}
+                    <button type="button" class="btn btn-primary" disabled>Cancel Requested</button>
+                {% endif %}
+            </div>
+            
+            <!-- JavaScript to toggle the form visibility -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var showReturnFormBtn = document.getElementById('showReturnFormBtn');
+                    var returnForm = document.getElementById('returnForm');
+            
+                    if (showReturnFormBtn && returnForm) {
+                        showReturnFormBtn.addEventListener('click', function(event) {
+                            event.preventDefault();  // Prevent default action for the button
+                            // Toggle the display of the return form
+                            if (returnForm.classList.contains('d-none')) {
+                                returnForm.classList.remove('d-none');
+                                showReturnFormBtn.style.display = 'none';  // Hide the return button
+                            } else {
+                                returnForm.classList.add('d-none');
+                                showReturnFormBtn.style.display = 'block';  // Show the return button
+                            }
+                        });
+            
+                        // Close the form when clicking outside of it
+                        document.addEventListener('click', function(event) {
+                            if (!returnForm.contains(event.target) && event.target !== showReturnFormBtn) {
+                                returnForm.classList.add('d-none');
+                                showReturnFormBtn.style.display = 'block';  // Show the return button
+                            }
+                        });
+                    }
+                });
+            </script>
+            
+            <!-- Add Bootstrap's 'd-none' class to hide elements -->
+            <style>
+                .d-none {
+                    display: none !important;
+                }
+            </style>
+          
+ 
+            
+        </div>
+
+    </div>
+    
+</div>
+<!-- view_status.html -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Example of updating the current time every minute
+        function updateCurrentTime() {
+            const currentTimeElem = document.getElementById('current-time');
+            const now = new Date().toLocaleTimeString();
+            currentTimeElem.textContent = now;
+        }
+    
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 60000); // Update every minute
+    });
+    </script>
+     
+
+
+<script>
+    // Get the current time
+    var currentTime = new Date();
+
+    // Format the time (optional)
+    var hours = currentTime.getHours();
+    var minutes = currentTime.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var formattedTime = hours + ':' + minutes + ' ' + ampm;
+
+    // Update the content of the span element with the current time
+    document.getElementById('current-time').textContent = formattedTime;
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#cancelOrderBtn').click(function(e) {
+            e.preventDefault(); // Prevent the default action
+            Swal.fire({
+                title: 'Do you really need to cancel this order?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, cancel it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'request_cancel_order' order_items.pk %}"; // Redirect to the cancel order URL
+                }
+            });
+        });
+    });
+    </script>
+    
+{% endblock content %}

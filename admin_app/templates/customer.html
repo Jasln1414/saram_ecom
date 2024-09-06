@@ -1,0 +1,95 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+
+{% block title %}
+<title>Customer</title>
+{% endblock title %}
+{% block style %}
+    <style>
+        .text-nowrap {
+            white-space: nowrap !important;
+            padding-top: 24px;
+        }
+
+        input {
+            width: 100px;
+        }
+    </style>
+{% endblock style %}
+
+            <div class="container-fluid">
+                <!-- Row 1 -->
+                <!-- Row 1 -->
+                <div class="row ">
+                    <div class="col-lg-12">
+                        <!-- Search bar -->
+                        <form action="{% url 'user_search' %}" method='post'>
+                            {% csrf_token %}
+                            <div class="input-group mb-3 mt-3">
+                                <input type="text" class="form-control" name='search' placeholder="Search users"
+                                    aria-label="Search users" aria-describedby="search-button">
+                                <button class="btn btn-primary" type="submit" id="search-button">Search</button>
+                            </div>
+                        </form>
+
+                        <!-- User details table -->
+                        <table class="table  table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Joined At</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loop through each user and display their details -->
+                                {% for user in users %}
+                                {% if not user.is_superuser %}
+                                <tr>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.date_joined|date:"Y-m-d" }}</td>
+                                    <td>
+                                        <!-- Add action buttons here -->
+                                        <!-- For example, you can use a form to handle block/unblock actions -->
+                                        {% if user.is_active %}
+                                        <form action="{% url 'block_user' user.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-danger" type="submit">Block</button>
+                                        </form>
+                                        {% else %}
+                                        <form action="{% url 'unblock_user' user.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn btn-outline-success" type="submit">Unblock</button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+                            <script>
+                                {% if messages %}
+                                {% for message in messages %}
+                                {% if message.tags == 'error' %}
+                                swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                                {% elif message.tags == 'success' %}
+                                swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                                {% else %}
+                                swal("Message", "{{ message }}"); // Display general message
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                            </script>
+                        </table>
+                    </div>
+                </div>
+
+
+
+{% endblock content %}

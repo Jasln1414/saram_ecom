@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+{% block logout %}
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+  integrity="sha384-dZJphvWB4gBFHqhDyv4m3D7cycoqj/ZxVBbsKsW9ec9CSJ0+Emlwj8bs3iyCegQj" crossorigin="anonymous" />
+
+{% block center %}
+{% endblock center %}
+
+{% block end %}
+{% endblock end %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-6 d-flex align-items-center justify-content-center">
+      <div class="form-container">
+        <div class="welcome-msg">Welcome !!!</div>
+        <div class="signup-msg">Welcome back User</div>
+
+        <form action="{% url 'login' %}" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="username"><i class="fa fa-user"></i> Username</label>
+            <input type="text" class="form-control" id="username" placeholder="Enter a username" name="username"
+              required />
+          </div>
+          <div class="form-group d-flex justify-content-between align-items-center">
+            <label for="password"><i class="fa fa-lock"></i> Password</label>
+            <div class="forgot-password-link">
+              <a href="{% url 'verify_email' %}">Forgot Password ?</a>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password"
+              required />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block rounded">Login</button>
+          </div>
+          <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+          <script>
+            {% if messages %}
+              {% for message in messages %}
+                {% if message.tags == 'error' %}
+                  swal("Error!", "{{ message }}", "error");
+                {% elif message.tags == 'success' %}
+                  swal("Success!", "{{ message }}", "success");
+                {% else %}
+                  swal("Message", "{{ message }}");
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </script>
+          <br />
+        </form>
+
+        <div class="login-msg text-center">
+          <span>I don't have an account?</span>
+          <a href="{% url 'register' %}" class="sign-in-link">Sign up</a>
+        </div>
+        <div class="div">
+          <div class="div-2"></div>
+          <div class="div-3">or</div>
+          <div class="div-4"></div>
+        </div>
+        <style>
+          .div {
+            align-self: center;
+            display: flex;
+            margin-top: 29px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 14px;
+            color: #969ab8;
+            font-weight: 500;
+            white-space: nowrap;
+            text-align: center;
+            letter-spacing: 0.1px;
+          }
+          @media (max-width: 991px) {
+            .div {
+              white-space: initial;
+            }
+          }
+          .div-2 {
+            border-color: rgba(11, 12, 13, 1);
+            border-style: solid;
+            border-width: 1px;
+            background-color: #0b0c0d;
+            align-self: stretch;
+            width: 200px;
+            height: 1px;
+            margin: auto 0;
+          }
+          .header__logo img {
+            max-width: 52%;
+            margin-right: 239px;
+          }
+          .div-3 {
+            font-family: Poppins, sans-serif;
+            align-self: stretch;
+          }
+          .div-4 {
+            border-color: rgba(16, 16, 17, 1);
+            border-style: solid;
+            border-width: 1px;
+            background-color: #101011;
+            align-self: stretch;
+            width: 200px;
+            height: 1px;
+            margin: auto 0;
+          }
+        </style>
+        <style>
+          /* Inline styles for quick testing */
+          .login-container {
+              max-width: 400px;
+              margin: 50px auto;
+              padding: 20px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              background-color: #f9f9f9;
+          }
+          .login-btn {
+              width: 100%;
+              background-color: #4CAF50;
+              color: white;
+          }
+      </style>
+        <br>
+        
+        <a href="{% provider_login_url 'google' %}?next=/" class="google-login-btn d-flex justify-content-center">
+          <img src="{% static 'img/google_logo.png' %}" alt="Google Icon" class="google-icon">
+      </a>
+      
+        <br /><br />
+        <style>
+          .google-login-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #da2893;
+            text-decoration: none;
+            border-radius: 560px;
+          }
+          .google-icon {
+            width: 50px;
+            height: 50px;
+          }
+          h5 {
+            margin: 0;
+            color: #be218aea;
+            font-weight: 400;
+            font-family: 'Montserrat', sans-serif;
+          }
+          .img {
+            aspect-ratio: 2.63;
+            object-fit: auto;
+            object-position: center;
+            width: 138px;
+            fill: #fff;
+            stroke-width: 1.604px;
+            stroke: #e0e2e9;
+            border-color: rgba(224, 226, 233, 1);
+            border-style: solid;
+            border-width: 2px;
+            align-self: center;
+            margin-top: 40px;
+            max-width: 100%;
+          }
+          a {
+            display: flex;
+            color: #c91793;
+            text-decoration: none;
+            background-color: transparent;
+            align-items: center;
+            justify-content: center;
+          }
+        </style>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<style>
+  .container-fluid {
+    background-color: #d9d9d9;
+    padding: 50px;
+  }
+  #exampleModalLongTitle {
+    margin-left: 168px;
+  }
+  .forgot-password-link a {
+    color: #f8a435;
+    font-size: 14px;
+  }
+  .forgot-password-link a:hover {
+    color: #1e446c;
+    text-decoration: none;
+  }
+  .form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 610px;
+    height: auto;
+  }
+  .welcome-msg {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .signup-msg {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    font-weight: bold;
+  }
+  .btn-primary {
+    background-color: #5c0948;
+    border-color: #680d5a;
+  }
+  .btn-primary:hover {
+    background-color: #580b41;
+    border-color: #440834;
+  }
+  .sign-in-link {
+    color: #4045c8;
+    font-weight: bold;
+  }
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 50px;
+  }
+  @media (max-width: 992px) {
+    .container-fluid {
+      padding: 20px;
+    }
+    .col-lg-6 {
+      max-width: 100%;
+    }
+    .img-fluid {
+      margin-top: 20px;
+      margin-left: 0;
+    }
+  }
+  @media (max-width: 768px) {
+    .form-container {
+      width: 100%;
+      padding: 20px;
+    }
+    .forgot-password-link {
+      text-align: right;
+    }
+    .form-group label {
+      font-size: 14px;
+    }
+    .form-group input {
+      font-size: 14px;
+    }
+  }
+  @media (max-width: 576px) {
+    .form-container {
+      padding: 15px;
+    }
+    .welcome-msg {
+      font-size: 20px;
+    }
+    .signup-msg {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .btn-primary {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
+</style>
+
+{% endblock %}

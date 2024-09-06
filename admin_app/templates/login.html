@@ -1,0 +1,97 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-bs-theme="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ADMIN</title>
+  <link rel="shortcut icon" type="image/png" href="" />
+  <link rel="stylesheet" href="{% static 'css/styles.min.css' %}" />
+</head>
+
+<body>
+  <!--  Body Wrapper -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <div
+      class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-3">
+            <div class="card mb-0">
+              <div class="card-body">
+                <a href="./index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                  <img src="{% static 'images/banner/WhatsApp Image 2024-08-12 at 15.21.14_787aa693.jpg' %}" width="180" alt="">
+                </a>
+                <form action="{% url 'admin_login' %}" method="post">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" name='username' onkeydown="moveToNext(event, 'password')"
+                      id="username" aria-describedby="emailHelp">
+                  </div>
+                  <div class="mb-4">
+                    <label for="exampleInputPassword1" class="form-label">Password</label>
+                    <input type="password" class="form-control" name='password' id="password">
+                  </div>
+                  <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="form-check">
+                      <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
+                      <label class="form-check-label text-dark" for="flexCheckChecked">
+                        Remember this Device
+                      </label>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100 py-2 fs-4 mb-4 rounded-2">Login</button>
+                </form>
+                <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+                <script>
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                    {% elif message.tags == 'success' %}
+                    swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                    {% else %}
+                    swal("Message", "{{ message }}"); // Display general message
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </script>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+  <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const formInputs = document.querySelectorAll("input");
+      formInputs.forEach(input => {
+        input.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            const index = Array.from(formInputs).indexOf(input);
+            const nextIndex = index + 1;
+            if (formInputs[nextIndex]) {
+              formInputs[nextIndex].focus();
+            }
+          }
+        });
+      });
+    });
+    function moveToNext(event, nextInputId) {
+      if (event.keyCode === 13) { // 13 is the keycode for Enter key
+        event.preventDefault();
+        document.getElementById(nextInputId).focus();
+      }
+    }
+  </script>
+</body>
+
+
+</html>

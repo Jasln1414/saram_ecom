@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<br><br><br><br>
+<div class="container" style="margin-bottom: 200px">
+    <div class="row justify-content-center align-items-center" style="height: 100%;">
+        <div class="col-md-6">
+            <div class="success">
+                <div class="vid">
+                    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"
+                        type="module"></script>
+
+                    <dotlottie-player src="https://lottie.host/27f81355-4d6c-4be8-bd50-23bbb3968fea/XbddFrHr8W.json"
+                        background="transparent" speed="0.8" style="width: 90%; height: 50%;padding-left: 61px;margin-bottom:-109px;" loop autoplay></dotlottie-player>
+                </div><br><br><br>
+                <div class="ty">
+                    <h1 class="text-center text-danger">PAYMENT FAILED</h1><br>
+                    <h6 class="text-center text-dark">Your order has been failed due to some reason. <br>You can pay from Your Orders Section.</h6><br><hr><br>
+                    <div class="d-flex justify-content-between ">
+                        <a href="{% url 'index' %}">
+                            <div class="btn btn-outline-danger ">Continue Shopping</div>
+                        </a>
+                        <a href="{% url 'view_all_order' %}">
+                            <div class="btn btn-outline-danger ">View Order Details</div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock content %}

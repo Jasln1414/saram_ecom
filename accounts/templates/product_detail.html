@@ -1,0 +1,777 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/css/elevatezoom.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<style>
+    /* General body styling */
+    body {
+        margin: 0; /* Remove default body margin */
+        padding: 0; /* Remove default body padding */
+    }
+    
+    /* General container styling */
+    .container {
+        width: 100%;
+        max-width: 90%; /* Adjust to a smaller value if needed */
+        margin: 0 auto;
+        padding: 10px; /* Reduce padding if needed */
+    }
+    
+    /* Row for value buttons */
+    .value-button-row {
+        display: flex;
+        flex-wrap: wrap; /* Allow wrapping for multiple value buttons */
+        gap: 10px; /* Space between buttons */
+        align-items: center; /* Center buttons horizontally */
+    }
+    
+    /* Style for value buttons */
+    .value-button {
+        padding: 10px;
+        background-color: #bd0795;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        flex: 1; /* Allow buttons to grow and shrink as needed */
+    }
+    
+    .value-button:hover {
+        background-color: #7b0849;
+    }
+    
+    /* Container for color swatches */
+    .color-swatch-container {
+        margin-bottom: 15px;
+    }
+    
+    .color-swatch {
+        width: 30px;
+        height: 30px;
+        display: inline-block;
+        border-radius: 50%;
+        margin: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        border: 2px solid #ccc;
+        cursor: pointer;
+    }
+    
+    /* Size and quantity selection styles */
+    .size-selection, .quantity-selection {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between elements within the selection */
+        width: 100%; /* Ensure full width */
+        margin-bottom: 15px; /* Space below selections */
+    }
+    
+    .prod_quantity {
+        width: 60px; /* Adjust as needed */
+        text-align: center;
+        margin: 0 10px;
+    }
+    
+    input[type="text"].form-control {
+        border-radius: 5px;
+        border-color: #ff5733; /* Bright orange border */
+    }
+    
+    /* Button styling */
+    .btn {
+        border-radius: 5px;
+        transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    /* Specific styles for Add to Cart button */
+    .btn-success {
+        background-color: #b90952; /* Bright green */
+        border-color: #ab0663;
+        padding: 15px 30px; /* Larger padding for prominence */
+        font-size: 16px; /* Larger font size */
+        font-weight: bold; /* Bold text */
+        text-transform: uppercase; /* Uppercase text */
+        border-radius: 50px; /* Rounded button */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow for prominence */
+        transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .btn-success:hover {
+        background-color: #c8380d;
+        border-color: #9d0f05;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3); /* Larger shadow on hover */
+    }
+    
+    /* Align elements for product details */
+    .product__details__button {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        gap: 15px; /* Space between items */
+        align-items: flex-start; /* Align items to the start */
+    }
+    
+    /* Style for buttons */
+    .size-button, .add-to-cart-button {
+        padding: 10px;
+        background-color: #59042d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%; /* Adjust width as needed */
+    }
+    
+    .size-button:hover, .add-to-cart-button:hover {
+        background-color: #570534;
+    }
+    
+    /* Tab navigation styling */
+    .nav-tabs {
+        border-bottom: 2px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+    
+    .nav-tabs .nav-item .nav-link {
+        border-radius: 0.25rem;
+        padding: 10px 15px;
+        font-weight: 600;
+        color: #bd6bbb;
+        background-color: #f8f9fa;
+    }
+    
+    .nav-tabs .nav-item .nav-link.active {
+        border-color: #cd68bc;
+        background-color: #ffffff;
+    }
+    
+    .nav-tabs .nav-item .nav-link:hover {
+        background-color: #e9ecef;
+    }
+    
+    /* Tab content styling */
+    .tab-content {
+        border-radius: 0.25rem;
+        padding: 20px;
+        background-color: #ffffff;
+    }
+    
+    .tab-pane h6 {
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    
+    .review-item {
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .review-item:last-of-type {
+        border-bottom: none;
+    }
+    
+    .review-item p {
+        margin: 0;
+        font-size: 14px;
+        color: #555555;
+    }
+    
+    /* Hide scrollbar for image thumbnails */
+    .product__details__pic__left {
+        overflow: auto; /* Allow scrolling */
+        max-height: 675px; /* Adjust as needed */
+        scrollbar-width: none; /* Hide scrollbar in Firefox */
+    }
+    
+    .product__details__pic__left::-webkit-scrollbar {
+        width: 0; /* Hide scrollbar width */
+        height: 0; /* Hide scrollbar height */
+    }
+    
+    .product__details__pic img {
+        width: 100%;
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    /* Responsive adjustments */
+    @media screen and (max-width: 768px) {
+        .product__details__button {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    
+        .size-selection, .quantity-selection {
+            margin-bottom: 10px;
+        }
+    
+        .value-button-row, .button-column {
+            width: 100%; /* Full width on small screens */
+        }
+    
+        .value-button {
+            width: auto; /* Adjust width for row layout on small screens */
+            margin: 5px 0; /* Vertical spacing for stacked layout */
+        }
+    }
+    </style>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+            
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    swal("Error!", "{{ message }}", "error");
+    {% elif message.tags == 'success' %}
+    swal("Success!", "{{ message }}", "success");
+    {% else %}
+    swal("Message", "{{ message }}");
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</script>
+<br />
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'index' %}">Home</a>
+                    {% if products_color.product.category.name == "Men's" %}
+                    <a href="{% url 'mens_page' %}">Men's</a>
+                    {% elif products_color.product.category.name == "Women's" %}
+                    <a href="{% url 'womens_page' %}">Women's</a>
+                    {% elif products_color.product.category.name == "Kid's" %}
+                    <a href="{% url 'kids_page' %}">Kid's</a>
+                    {% else %}
+                    <a href="{% url 'shop_page' %}">Shop</a>
+                    {% endif %}
+                    <a href="">{{ products_color.product.name }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Product Details Section Begin -->
+<section class="product-details spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="product__details__pic">
+                    <!-- Thumbnails for product images -->
+                    <div class="product__details__pic__left product__thumb nice-scroll">
+                        <a class="pt" href="#">
+                            <img src="{{ products_color.image1.url }}" alt="Product Image 1">
+                        </a>
+                        <a class="pt" href="#">
+                            <img src="{{ products_color.image2.url }}" alt="Product Image 2">
+                        </a>
+                        <a class="pt" href="#">
+                            <img src="{{ products_color.image3.url }}" alt="Product Image 3">
+                        </a>
+                        <a class="pt" href="#">
+                            <img src="{{ products_color.image4.url }}" alt="Product Image 4">
+                        </a>
+                    </div>
+            
+                    <!-- Slider for product images -->
+                    <div class="product__details__slider__content">
+                        <div class="product__details__pic__slider owl-carousel">
+                            <img data-hash="product-1" class="product__big__img" src="{{ products_color.image1.url }}" alt="Product Image 1">
+                            <img data-hash="product-2" class="product__big__img" src="{{ products_color.image2.url }}" alt="Product Image 2">
+                            <img data-hash="product-3" class="product__big__img" src="{{ products_color.image3.url }}" alt="Product Image 3">
+                            <img data-hash="product-4" class="product__big__img" src="{{ products_color.image4.url }}" alt="Product Image 4">
+                        </div>
+                    </div>
+                </div>
+            <div>
+            </div>
+            </div>
+           <div class="col-lg-6">
+                <div class="product__details__text">
+                    <!-- Product Name and Color -->
+                    <h4>{{ products_color.product.name }} - {{ products_color.color }}</h4>
+                    
+                    <!-- Brand Name (if available) -->
+                    {% if products_color.product.brand %}
+                        <h4><b>{{ products_color.product.brand }}</b></h4>
+                    {% endif %}
+                    
+                    <!-- Display Original Price and Offer Price -->
+                    <div>
+                        {% if products_color.product.offer_price and products_color.product.offer_price < products_color.product.price %}
+                            <!-- If there's an offer, display both original and offer prices -->
+                            <div class="product__details__price"style=" margin-bottom: 0px">
+                                ${{ products_color.product.offer_price }}
+                                <span style="text-decoration: line-through; color: #888;">
+                                    ${{ products_color.product.price }}
+                                </span>
+                            </div>
+                        {% else %}
+                            <!-- If no offer, just display the original price -->
+                            <div class="product__details__price">
+                                ${{ products_color.product.price }}
+                            
+                        {% endif %}
+                            
+
+                    <!-- Display Discount Percentage if applicable -->
+                    
+                        {% if products_color.product.percentage and products_color.product.percentage > 0 %}
+
+                    <div style="width: 150px; font-size: 30px; margin-top: 0px; color: red;">
+                          
+
+                                {% if  products_color.product.category.categoryoffer.discount_percentage > products_color.product.percentage %}
+                                <strong>{{  products_color.product.category.categoryoffer.discount_percentage  }}% OFF</strong>
+                                {% else %}
+                                <strong>{{ products_color.product.percentage }}% OFF</strong>
+                                {% endif %}
+                       
+                    </div>
+                        {% endif %}
+                    </div>
+                
+                   
+                </div>
+            
+<!-- Available Colors -->
+<h5>Available Colors:</h5>
+<div class="color-swatch-container">
+    {% for color in product_colors %}
+        <a href="{% url 'product_detail' color.id %}" style="text-decoration: none;">
+            <div class="color-swatch" style="background-color: {{ color.color }};"></div>
+        </a>
+    {% endfor %}
+</div>
+ <div class="product__details__button">
+                    {% if products_color.is_listed and products_color.product.category.is_listed %}
+                        <form method="post" action="{% url 'add_to_cart' products_color.id %}">
+                            {% csrf_token %}
+                            <div class="size-selection">
+                                <label for="size">Size:</label>
+                                <div class="btn-group" role="group" aria-label="Size selection">
+                                    {% for size in products_color.size.all %}
+                                        <button type="button" class="btn btn-outline-primary" data-size="{{ size.size }}" onclick="selectSize(this)">
+                                            {{ size.size }}
+                                        </button>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="quantity-selection">
+                                <div class="value-button" id="decrease" onclick="updateQuantity('decrease')">-</div>
+                                <input type="text" id="number" class="prod_quantity form-control text-center" name="quantity" value="1" max="9" readonly>
+                                <div class="value-button" id="increase" onclick="updateQuantity('increase')">+</div>
+                            </div>
+
+                            <!-- Hidden input to store the selected size -->
+                            <input type="hidden" name="size" id="selectedSize" required>
+                            
+                            <!-- Add to Cart button -->
+                            <button type="submit" class="btn btn-success">Add to Cart</button></div>
+                        </form>
+                        <div class="d-flex justify-content-end" style="margin-top: -156px; margin-right: 90px;">
+                            <a class="text-light" href="{% url 'wishlist_add' products_color.id %}">
+                                <button style="
+                                        border-radius: 50px;
+                                        padding: 14px 18px 9px;
+                                        background-color: rgb(232, 14, 14);
+                                        color: white;
+                                        border: none;
+                                       
+                                        transition: box-shadow 0.3s ease-in-out;
+                                        position: relative;
+                                        overflow: hidden;
+                                    "
+                                    type="submit"
+                                    class="btn btn-primary wishlist-btn shiny-button">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </a>
+                        </div>
+                        
+                        <style>
+                           
+                            
+                        </style>
+                         
+ </div>
+                </div>
+            </div>
+        </div>
+    
+    
+                    {% else %}
+                        <a href="#" class="btn btn-secondary cart-btn" disabled>Out of Stock</a>
+                    {% endif %}
+                    {% if size_limit_exceeded %}
+                    <div class="size-limit-muted-line">
+                        Size limit exceeded. Please select a different size.
+                    </div>
+                {% endif %}
+            </div>
+               
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+            
+
+
+               
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12" style="margin-top: 82px;">
+                                <div class="product__details__tab mt-5">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Description</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews (2)</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content mt-3">
+                                        <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                                            <h6>Description</h6>
+                                            <p>{{ products_color.product.description }}</p>
+                                        </div>
+                
+                                        <div class="tab-pane" id="tabs-3" role="tabpanel">
+                                            <h6>Reviews (2)</h6>
+                                            <div class="review-item">
+                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.</p>
+                                            </div>
+                                            <div class="review-item">
+                                                <p>Another review here. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                
+                     
+                 <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="related__title">
+                    <h5>RELATED PRODUCTS</h5>
+                </div>
+            </div>
+            {% for rp in related_product %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="product__item">
+                    <div class="product__item__pic set-bg" data-setbg="{{ rp.image1.url }}">
+
+                        <div class="label new">New</div>
+                        <ul class="product__hover">
+                            <li><a href="{{rp.image1.url}}" class="image-popup"><span class="arrow_expand"></span></a>
+                            </li>
+                            <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                            <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                        </ul>
+                    </div>
+                    <div class="product__item__text">
+                        <h6><a href="{% url 'product_detail' rp.id %}">{{rp.product.name}}</a></h6>
+                        <div class="rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </div>
+                        <div class="product__price">$ {{rp.product.price}} </div>
+                        
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+            </div>
+       
+
+
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+<!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const productId = 1;  // Replace with the actual product ID
+
+            // Fetch colors based on product ID
+            $.get(`/product/${productId}/colors/`, function(data) {
+                const dropdownMenu = $('#colorDropdownMenu');
+                dropdownMenu.empty();
+
+                data.colors.forEach(color => {
+                    const item = $('<a>')
+                        .addClass('dropdown-item')
+                        .text(color.color)
+                        .data('colorImageId', color.id)
+                        .css('background-color', color.hex)  // Assuming color.hex is the color code
+                        .css('color', '#fff')  // Ensure text is readable
+                        .click(function() {
+                            const colorImageId = $(this).data('colorImageId');
+                            $.post(`/add-to-cart/${colorImageId}/`, function(response) {
+                                if (response.success) {
+                                    alert('Product added to cart');
+                                }
+                            });
+                        });
+
+                    dropdownMenu.append(item);
+                });
+            });
+        });
+    </script>
+
+
+
+    
+<!-- Product Details Section End -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/2.2.3/jquery.elevatezoom.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/owl.carousel/2.3.4/owl.carousel.min.js"></script>
+<script src="path/to/zoom.js"></script> <!-- Replace with the correct path to zoom.js -->
+
+<script>
+   
+                function selectSize(button) {
+                    // Get the size value from the data-size attribute of the clicked button
+                    var selectedSize = button.getAttribute("data-size");
+            
+                    // Update the hidden input field with the selected size value
+                    document.getElementById("selectedSize").value = selectedSize;
+            
+                    // Remove the active class from all buttons
+                    var buttons = document.querySelectorAll(".btn-group .btn");
+                    buttons.forEach(function(btn) {
+                        btn.classList.remove("active");
+                    });
+            
+                    // Add the active class to the clicked button
+                    button.classList.add("active");
+                }
+    
+            
+
+
+   
+$(document).ready(function(){
+    // Initialize Owl Carousel
+    $('.product__details__pic__slider').owlCarousel({
+        items: 1,
+        loop: true,
+        nav: true,
+        dots: false,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        smartSpeed: 1000
+    });
+
+    // Initialize zoom functionality
+    $('.product__big__img').zoom(); // or any other zoom plugin initialization code
+});
+</script>
+
+</script>
+
+<script>
+$("#zoom").elevateZoom()
+</script>
+<script>
+$(document).ready(function () {
+// Initialize the carousel
+var owl = $('.product__details__pic__slider').owlCarousel({
+    // Your carousel options here
+});
+
+// Add click event listener to thumbnail images
+$('.product__details__pic__left .pt').on('click', function (e) {
+    e.preventDefault(); // Prevent the default action
+    var imgSrc = $(this).find('img').attr('src'); // Get the src of the clicked thumbnail
+    $('.product__details__pic__slider .product__big__img').attr('src', imgSrc); // Update the main image viewer
+    $('.product__details__pic__slider .product__big__img').data('elevateZoom').swaptheimage(imgSrc, imgSrc); // Update the zoom
+});
+
+// Apply zoom to all images in the slider
+$('.product__details__pic__slider img').each(function() {
+    $(this).elevateZoom();
+});
+});
+$('.set-bg').each(function(){
+    var bg = $(this).data('setbg');
+    $(this).css('background-image', 'url(' + bg + ')');
+});
+</script>
+
+<script>
+    function updateQuantity(operation) {
+        var quantityInput = document.getElementById('number');
+        var currentQuantity = parseInt(quantityInput.value, 10);
+        if (isNaN(currentQuantity)) {
+            currentQuantity = 0; // Default to 0 if the current value is not a number
+        }
+
+        if (operation === 'increase' && currentQuantity < 9) {
+            currentQuantity++;
+        } else if (operation === 'decrease' && currentQuantity > 1) {
+            currentQuantity--; // Prevent decreasing below 1
+        }
+
+        quantityInput.value = currentQuantity;
+    }<!-- Ensure jQuery and elevateZoom are loaded -->
+
+
+
+
+$(document).ready(function () {
+    // Initialize the carousel
+    var owl = $('.product__details__pic__slider').owlCarousel({
+        // Your carousel options here
+    });
+
+    // Add click event listener to thumbnail images
+    $('.product__details__pic__left .pt').on('click', function (e) {
+        e.preventDefault(); // Prevent the default action
+        var imgSrc = $(this).find('img').attr('src'); // Get the src of the clicked thumbnail
+        $('.product__details__pic__slider .product__big__img').attr('src', imgSrc); // Update the main image viewer
+        $('.product__details__pic__slider .product__big__img').data('elevateZoom').swaptheimage(imgSrc, imgSrc); // Update the zoom
+    });
+
+    // Apply zoom to the main image
+    $(".product__big__img").elevateZoom({
+        zoomType: "inner", // Inner zoom
+        cursor: "crosshair" // Zoom cursor
+    });
+
+    // Update zoom when carousel slides
+    owl.on('changed.owl.carousel', function(event) {
+        var currentImage = $(event.target).find('.owl-item.active .product__big__img').attr('src');
+        $('.product__big__img').data('elevateZoom').swaptheimage(currentImage, currentImage);
+    });
+});
+
+
+
+    $(document).ready(function(){
+        $("#zoom_image").elevateZoom({
+            zoomType: "lens",
+            lensShape: "round",
+            lensSize: 200
+        });
+    });
+
+
+
+    // product_detail.js
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sizeItems = document.querySelectorAll('.size-item');
+
+    sizeItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const size = item.getAttribute('data-size');
+            const id = item.getAttribute('data-id');
+            // Example action: alert size and id
+            alert(`Size: ${size}, ID: ${id}`);
+
+            // You can also implement functionality to update cart or fetch more details
+            // Example: Redirect to a detailed size page or add to cart
+            // window.location.href = `/add-to-cart/${id}/`;
+        });
+    });
+});
+
+</script>
+
+
+
+{% endblock %}

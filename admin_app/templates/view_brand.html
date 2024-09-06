@@ -1,0 +1,125 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+{% block title %}
+<title>Product</title>
+{% endblock title %}
+
+<head>
+    <script src="https://kit.fontawesome.com/83f31ed500.js" crossorigin="anonymous"></script>
+</head>
+{% block style %}
+<style>
+    .text-nowrap {
+        white-space: nowrap !important;
+        padding-top: 24px;
+    }
+
+    input {
+        width: 100px;
+    }
+
+    #images {
+        width: 50px;
+        border-radius: 7px;
+    }
+</style>
+{% endblock style %}
+
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row ">
+        <div class="col-lg-12 ">
+            <div class=" mb-3 mt-3">
+
+                <div class="d-flex justify-content-center">
+                    <h3>Manage Brand</h3>
+
+                </div>
+                
+            </div>
+        </div>
+        <br>
+        <hr>
+        
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <script>
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+            {% elif message.tags == 'success' %}
+            swal("Success!", "{{ message }}", "success"); 
+            {% elif message.tags == 'info' %}
+            swal("Info!", "{{ message }}", "info");
+            // Display success message with a success icon
+            {% else %}
+            swal("Message", "{{ message }}"); // Display general message
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </script>
+            <br />
+        <br />
+        <!-- User details table -->
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th scope="col" style="display: flex;">Name</th>
+                    <th scope="col">Description</th>
+                    
+                    <th scope="col" style="display: flex;justify-content: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for brand in brands %}
+                <tr>
+
+
+                    <td>{{ brand.name }}</td>
+                    <td style="width: 430px;">{{ brand.description }}</td>
+                    <td>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex justify-content-center ">
+                                <a href="{% url 'delete_brand' brand.id %}"class="btn btn-outline-danger me-4">Delete</a>
+                                <a href="{% url 'edit_brand' brand.id %}"class="btn btn-outline-primary me-4">Edit</a>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+    
+</div>
+</div>
+
+</div><br>
+
+</div>
+<script>
+    function updateQuantity(size, rowIndex) {
+        var sizes = document.getElementById('size-dropdown-' + rowIndex).options;
+        var quantities = {};
+        sizes.forEach(function (option) {
+            quantities[option.value] = option.textContent;
+        });
+        document.getElementById('quantity-display-' + rowIndex).textContent = quantities[size];
+    }
+</script>
+<script>
+    function updateQuantity(size, rowIndex) {
+        var selectedOption = document.getElementById('size-dropdown-' + rowIndex).options[document.getElementById('size-dropdown-' + rowIndex).selectedIndex];
+        var quantity = selectedOption.getAttribute('data-quantity');
+        document.getElementById('quantity-display-' + rowIndex).textContent = quantity;
+    }
+</script>
+
+
+
+{% endblock content %}

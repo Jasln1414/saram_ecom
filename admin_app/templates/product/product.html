@@ -1,0 +1,227 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+{% block title %}
+<title>Product</title>
+{% endblock title %}
+
+<head>
+    <script src="https://kit.fontawesome.com/83f31ed500.js" crossorigin="anonymous"></script>
+</head>
+{% block style %}
+<style>
+    .text-nowrap {
+        white-space: nowrap !important;
+        padding-top: 24px;
+    }
+
+    input {
+        width: 100px;
+    }
+
+    #images {
+        width: 50px;
+        border-radius: 7px;
+    }
+
+    @media (max-width: 768px) {
+        .table-responsive {
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            flex-direction: column;
+        }
+
+        .input-group .form-control,
+        .input-group .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .table thead th {
+            display: none;
+        }
+
+        .table tbody td {
+            display: block;
+            width: 100%;
+            text-align: right;
+            border-top: none;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table tbody td:before {
+            content: attr(data-label);
+            float: left;
+            font-weight: bold;
+        }
+
+        .table tbody td:last-child {
+            border-bottom: 0;
+        }
+
+        .btn-outline-danger, .btn-outline-success, .btn-outline-primary {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+    }
+</style>
+{% endblock style %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mb-3 mt-3">
+                <div class="d-flex justify-content-center">
+                    <h3>Manage Product</h3>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a href="{% url 'product_recycle_bin' %}">
+                        <!--<i class="fa-sharp fa-solid fa-trash fa-shake" style="font-size: xx-large; margin-right: 10px;"></i>-->
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+   
+    
+    <br>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script>
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+        swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+        {% elif message.tags == 'success' %}
+        swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+        {% else %}
+        swal("Message", "{{ message }}"); // Display general message
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </script>
+    <br/>
+    <br/>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" class="text-center">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Sizes</th>
+                    <th scope="col">Quantities</th>
+                    <th scope="col">Images</th>
+                    <th scope="col" class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td data-label="Name">{{ product.product.name }}
+                        <br>
+                        <div class="d-flex flex-column">
+                            {% if product.is_listed %}
+                            <span class="badge bg-success text-white rounded-pill px-2 py-1">Active</span>
+                            {% else %}
+                            <span class="badge text-white rounded-pill px-2 py-1" style="background-color: red;">Inactive</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td data-label="Category">{{ product.product.category.name }}</td>
+                    <td data-label="Color">{{ product.color }}</td>
+                    <td data-label="Type">{{product.product.type}}</td>
+                    <td data-label="Price">₹{{ product.product.price }}</td>
+                    <td data-label="Sizes">
+                        <select id="size-dropdown-{{ forloop.counter }}" onchange="updateQuantity(this.value, '{{ forloop.counter }}')">
+                            {% for size in product.size.all %}
+                            <option value="{{ size.size }}" data-quantity="{{ size.quantity }}">{{ size.size }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td data-label="Quantities" id="quantity-display-{{ forloop.counter }}">-</td>
+                    <td data-label="Images">
+                        <img id="images" src="{{ product.image1.url }}" alt="Product Image">
+                    </td>
+                    <td data-label="Actions">
+                        {% if product.is_listed %}
+                        <form action="{% url 'product_is_unlisted' product.id %}?page={{ page_obj.number }}&{% if request.GET.urlencode %}&{{ request.GET.urlencode|slice:'1:' }}{% endif %}" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex flex-column">
+                                <a href="{% url 'product_is_deleted' product.id %}" class="btn btn-outline-danger mb-2">Delete</a>
+                                <button class="btn btn-outline-success" type="submit">Unlist</button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <form action="{% url 'product_is_listed' product.id %}?page={{ page_obj.number }}&{% if request.GET.urlencode %}&{{ request.GET.urlencode|slice:'1:' }}{% endif %}" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex flex-column">
+                                <a href="{% url 'edit_product' product.id %}" class="btn btn-outline-primary mb-2">Edit</a>
+                                <a href="{% url 'product_is_deleted' product.id %}" class="btn btn-outline-danger mb-2">Delete</a>
+                                <button class="btn btn-outline-primary" type="submit">List</button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <div class="d-flex justify-content-center">
+        {% if is_paginated %}
+        <nav aria-label="pagination">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="?page={{ page_obj.previous_page_number }}&{% if request.GET.urlencode %}&{{ request.GET.urlencode|slice:'1:' }}{% endif %}">Previous</a>
+                </li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                {% if i == page_obj.number %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page={{i}}&{% if request.GET.urlencode %}&{{ request.GET.urlencode|slice:'1:' }}{% endif %}" class="visually-hidden">{{i}}</a>
+                </li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{i}}&{% if request.GET.urlencode %}&{{ request.GET.urlencode|slice:'1:' }}{% endif %}">{{i}}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" tabindex="-1" href="?page={{ page_obj.next_page_number }}&{% if request.GET.urlencode %}&{{ request.GET.urlencode|slice:'1:' }}{% endif %}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    <br><br><br>
+</div>
+
+<script>
+    function updateQuantity(size, rowIndex) {
+        var selectedOption = document.getElementById('size-dropdown-' + rowIndex).options[document.getElementById('size-dropdown-' + rowIndex).selectedIndex];
+        var quantity = selectedOption.getAttribute('data-quantity');
+        document.getElementById('quantity-display-' + rowIndex).textContent = quantity;
+    }
+
+    window.onload = function() {
+        var productCount = {{ products|length }};
+        for (var i = 1; i <= productCount; i++) {
+            var sizeDropdown = document.getElementById('size-dropdown-' + i);
+            if (sizeDropdown) {
+                var firstOption = sizeDropdown.options[0];
+                var quantity = firstOption.getAttribute('data-quantity');
+                document.getElementById('quantity-display-' + i).textContent = quantity;
+            }
+        }
+    }
+</script>
+
+{% endblock content %}

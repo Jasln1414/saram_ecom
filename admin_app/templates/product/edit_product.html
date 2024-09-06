@@ -1,0 +1,126 @@
+{% extends "header.html" %}
+{% load static %}
+
+{% block content %}
+
+{% block title %}
+<title>Edit Product</title>
+{% endblock title %}
+
+<head>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" name="name" id="productName" class="form-control"
+                        value="{{ color_image.product.name }}" >
+                </div>
+                <div class="form-group">
+                    <label for="productBrand">Brand</label>
+                    <select name="brand" id="productBrand" class="form-control">
+                        <option value="">Choose Brand</option>
+                        {% for brand in brands %}
+                            <option value="{{ brand.pk }}" {% if brand.pk == color_image.product.brand.id %}selected{% endif %}>
+                                {{ brand.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Category</label>
+                    <select name="category" id="productCategory" class="form-control">
+                        <option value=" {{color_image.product.category.id}} "> {{color_image.product.category.name}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="productName">Product Type</label>
+                    <input type="text" name="type" id="productName" class="form-control"
+                        value="{{ color_image.product.type }}" >
+                </div>
+
+                <div class="form-group">
+                    <label for="productPrice">Price</label>
+                    <input type="number" step="0" name="price" id="productPrice" class="form-control"
+                        value="{{ color_image.product.price }}" >
+                </div>
+               
+                
+                <div class="form-group">
+                    <label for="productSizes">Sizes & Quantities</label>
+                    <div class="input-group mb-3">
+                        {% for size in sizes %}
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{ size.size }}</span>
+                        </div>
+                        <input type="number" step="1" name="{{ size.size }}" id="{{ size.size }}" class="form-control" value="{{ size.quantity }}">
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="productOldPrice">percentage</label>
+                    <input type="number" step="0" name="percentage" id="productPrice" class="form-control"
+                        value="{{ color_image.product.percentage }}" >
+                </div>
+
+                <div class="form-group">
+                    <label for="productOldPrice">Expiry Date</label>
+                    <input type="date" name="exp_date" id="producPriceExpDate" class="form-control"
+                        value="{{ color_image.product.per_expiry_date }}">
+                </div>
+                <div class="form-group">
+                    <label for="productDescription">Description</label>
+                    <textarea name="description" id="productDescription" class="form-control" rows="8">{{ color_image.product.description }}</textarea>
+                </div>
+                <div class="d-flex">
+                    <div class="form-group">
+                        <label for="productImage1">Image 1</label>
+                        <input type="file" name="image1" id="productImage1" class="form-control-file">
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage2">Image 2</label>
+                        <input type="file" name="image2" id="productImage2" class="form-control-file">
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage3">Image 3</label>
+                        <input type="file" name="image3" id="productImage3" class="form-control-file">
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage4">Image 4</label>
+                        <input type="file" name="image4" id="productImage4" class="form-control-file">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+            <br>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                swal("Error!", "{{ message }}", "error");
+                {% elif message.tags == 'success' %}
+                swal("Success!", "{{ message }}", "success");
+                {% else %}
+                swal("Message", "{{ message }}");
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </script>
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

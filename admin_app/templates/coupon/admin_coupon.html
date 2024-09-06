@@ -1,0 +1,99 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block content %}
+
+{% block title %}
+
+<title>Coupons</title>
+
+{% endblock title %}
+
+
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row ">
+        <div class="col-lg-12 ">
+            <div class=" mb-3 mt-3">
+                <br><br>
+                <div class="d-flex justify-content-between ">
+                    <a class="btn btn-outline-primary" href="{% url 'add_coupon' %}">
+                        <i class="fa-sharp fa-solid fa-plus"style=""></i>Add Coupon</a>
+                    
+                </div>
+                <br>
+                
+                <div class="d-flex justify-content-center">
+                    <h3>Manage Coupons</h3>
+
+                </div><hr><br>
+                
+                <br>
+                
+
+                
+            </div>
+        </div>
+        <br>
+       
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <script>
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            swal("Error!", "{{ message }}", "error");
+            {% elif message.tags == 'success' %}
+            swal("Success!", "{{ message }}", "success"); 
+            {% else %}
+            swal("Message", "{{ message }}"); 
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </script>
+            <br />
+        <br />
+        <!-- User details table -->
+
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th scope="col" style="display: flex; justify-content: center;">Coupon Code</th>
+                    <th scope="col">Coupon Name</th>
+                    <th scope="col">Coupon Offer</th>
+                    <th scope="col">Used/Total</th>
+                    <th scope="col">Starting Date</th>
+                    <th scope="col">Expiry Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            {% for coupon in coupons %}
+            <tbody>
+                <tr>
+                    <td>{{coupon.coupon_code}}</td>
+                    <td>{{coupon.coupon_name}}</td>
+                    <td>{{coupon.discount_percentage}}</td>
+                    <td>{{coupon.used_count}}/{{coupon.usage_limit}}</td>
+                    <td>{{ coupon.added_date|date:"d-m-Y" }}</td>
+                    <td>{{ coupon.expiry_date|date:"d-m-Y" }}</td>
+                    
+                    <td>
+                            <div class="d-flex">
+                                <a href="{% url 'edit_coupon' coupon.pk %}"
+                                    class="btn btn-outline-primary me-4">Edit</a>
+                                <a href="{% url 'del_coupon' coupon.pk %}"
+                                    class="btn btn-outline-danger me-4">Delete</a>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+            {% endfor %}
+
+        </table>
+    </div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock content %}

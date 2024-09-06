@@ -1,0 +1,85 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+{% block title %}
+<title>Add Coupon</title>
+{% endblock title %}
+
+{% block style %}
+<style>
+    .text-nowrap {
+        white-space: nowrap !important;
+        padding-top: 24px;
+    }
+
+    input {
+        width: 100px;
+    }
+</style>
+{% endblock style %}
+
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <form action="{% url 'add_brand' %}" method='post'>
+                {% csrf_token %}
+                <br><br>
+
+                <div class="">
+                    <div>
+                        <label for="exampleInputCode" class="form-label">Brand Name</label>
+                        <input type="text" required autocomplete="off" class="form-control"
+                            onkeydown="moveToNext(event, 'exampleInputDescription')" name="brand_name"
+                            placeholder="Brand name" id="exampleInputCode">
+                    </div>
+                    <br><br>
+                    <div class="mb-3">
+                        <label for="exampleInputDescription" class="form-label ">Description</label>
+                        <textarea class="form-control" autocomplete="off" id="exampleInputDescription" name="description"
+                            placeholder="Description" rows="7"></textarea>
+                    </div>
+                    <br><br>
+                    
+                   
+                    
+                    <div class="d-flex justify-content-center ">
+                        <button type="submit" class="btn btn-primary d-flex justify-content-end">Add Brand</button>
+
+                    </div>
+                </div>
+            </form>
+            <br>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                {% elif message.tags == 'success' %}
+                swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                {% else %}
+                swal("Message", "{{ message }}"); // Display general message
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </script>
+            <br />
+        </div>
+    </div>
+</div>
+<script>
+    function moveToNext(event, nextInputId) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            var nextInput = document.getElementById(nextInputId);
+            if (nextInput) {
+                nextInput.focus();
+            }
+        }
+    }
+</script>
+
+{% endblock content %}

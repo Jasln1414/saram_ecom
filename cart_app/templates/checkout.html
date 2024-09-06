@@ -1,0 +1,599 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    fieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    input {
+        border: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    input[type="radio"] {
+        accent-color: var(--color-primary);
+    }
+
+    .form__radios {
+        display: grid;
+        gap: 1em;
+    }
+
+    .form__radio {
+        align-items: center;
+        background-color: #fefdfe;
+        border-radius: 1em;
+        box-shadow: 0 0 1em rgba(0, 0, 0, 0.0625);
+        display: flex;
+        padding: 1em;
+    }
+
+    .form__radio label {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        gap: 1em;
+    }
+
+
+    .icon {
+        block-size: 1em;
+        display: inline-block;
+        fill: currentColor;
+        inline-size: 1em;
+        vertical-align: middle;
+    }
+
+
+</style>
+
+<style>
+    /* Shiny button effect */
+ .shiny-button {
+     background-color: #ff5733;
+     color: #fff;
+     border: none;
+     padding: 10px 20px;
+     font-size: 16px;
+     font-weight: bold;
+     border-radius: 5px;
+     position: relative;
+     overflow: hidden;
+     z-index: 1;
+     transition: background-color 0.3s ease;
+     box-shadow: 0 5px 15px rgba(255, 87, 51, 0.5);
+ }
+ 
+ .shiny-button::before {
+     content: '';
+     position: absolute;
+     top: -50%;
+     left: -50%;
+     width: 200%;
+     height: 200%;
+     background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.7));
+     transform: rotate(45deg);
+     transition: all 0.5s ease;
+ }
+ 
+ .shiny-button:hover {
+     background-color: #e14b2d;
+     box-shadow: 0 5px 15px rgba(255, 87, 51, 0.8);
+ }
+ 
+ .shiny-button:hover::before {
+     top: -150%;
+     left: -150%;
+ }
+ 
+ .shiny-button:active {
+     background-color: #c43b24;
+     box-shadow: none;
+ }
+  
+ </style>
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'index' %}"><i class="fa fa-home"></i> Home</a>
+                    <a href="{% url 'shop_cart' %}">Shopping Cart</a>
+                    <a href="{% url 'checkout' %}">Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+    {% elif message.tags == 'success' %}
+    swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+    {% else %}
+    swal("Message", "{{ message }}"); // Display general message
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</script>
+<!-- Checkout Section Begin -->
+
+
+{% if addresses %}
+<section class="checkout spad">
+    <div class="container">
+        <div class="d-flex justify-content-end ">
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
+                <select name="coupon_code" style="width: 253px; height: 56px; border-radius: 55px;">
+                    <option value="" class="text-center">Select a coupon</option>
+                    {% for coupon in coupons %}
+                    <option class="text-center" value="{{ coupon.coupon_code }}">{{ coupon.coupon_code }} -
+                        {{coupon.coupon_name }}</option>
+                    {% endfor %}
+                </select>
+                {% if coupon_applied == False %}
+                <button type="submit" class="site-btn">Apply</button>
+                {% else %}
+                <button type="submit" class="site-btn">Remove</button>
+                <input type="hidden" name="action" value="remove_coupon">
+                {% endif %}
+            </form>
+        </div><br><br>
+        
+       
+        <form action="{% url 'place_order' %}" class="checkout__form" method='post'>
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-8">
+                    <h5 class="text-center">Billing detail</h5>
+                    <div class="row address">
+                        {% for i in addresses %}
+                        <div class="card" style="width: 18rem;margin-right: 80px;">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">Address( {{forloop.counter}} ) </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">Name : {{i.first_name}} {{i.last_name}}</h6>
+                                <p class="card-text"> House Name : {{i.house_name}}(H)</p>
+                                <p class="card-text">City : {{i.city}}</p>
+                                <p class="card-text">State : {{i.state}}</p>
+                                <p class="card-text">Postal Code : {{i.postal_code}}</p>
+                                <p class="card-text">Country : {{i.country}}</p>
+                                <p class="card-text">Phone Number : {{i.phone_number}}</p>
+                                <div class="form-check">
+                                    {% if addresses|length == 1 %}
+                                    <input required class="form-check-input" type="radio" checked name="select_address"
+                                        id="address-{{i.id}}" value="{{i.id}}">
+                                    {% else %}
+                                    <input required class="form-check-input" type="radio" name="select_address"
+                                        id="address-{{i.id}}" value="{{i.id}}">
+                                    {% endif %}
+                                    <label class="form-check-label" for="address-{{i.id}}">
+                                        Select
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="checkout__order">
+                        <h5 class="text-center">Your order</h5>
+                        <div class="checkout__order__product">
+                            <ul>
+                                <li>
+                                    <span class="top__text">Product</span>
+                                    <span class="top__text__right">Total</span>
+                                </li>
+                                {% for item in cartitems %}
+                                <li id="prod_name">{{ item.product.product.name }}-{{item.product_size}} X {{item.quantity}} <span
+                                        style="color: red;">₹
+                                        {{item.total_price }}</span><br></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="checkout__order__total">
+                            <ul>
+                                <li>Subtotal : <span>₹ {{sub_total}}.0</span></li><br>
+                                {% if discount_amount %}
+                                <li>Discounted Price : <span>₹ {{ discount_amount }}.0</span></li>
+
+                                <br>
+                                {% endif %}
+                                <li>Shipping Fee : <span>₹ {{shipping_fee}}</span></li><br>
+                                <li id="totalAmount">Total : <span>₹ {{total}}.0</span></li>
+
+                            </ul>
+                        </div>
+
+                        <legend>Payment Method</legend>
+
+                        <div class="form__radios">
+                            {% if total > 3000 %}
+                                <div class="form__radio">
+                                    <video id="cod-video" width="50" height="50" autoplay muted loop style="border-radius: 100px;">
+                                        <source src="https://d1jj76g3lut4fe.cloudfront.net/processed/thumb/05ggV0j3NkL863RlQG.mp4" type="video/mp4">
+                                    </video>
+                                    <label for="visa"><strike>COD</strike></label>
+                                    <input checked id="visa" name="payment_method" value="COD" type="radio" disabled>
+                                </div>
+                                {% else %}
+                                <div class="form__radio">
+                                    <video id="cod-video" width="50" height="50" autoplay muted loop style="border-radius: 100px;">
+                                        <source src="https://d1jj76g3lut4fe.cloudfront.net/processed/thumb/05ggV0j3NkL863RlQG.mp4" type="video/mp4">
+                                    </video>
+                                    <label for="visa">COD</label>
+                                    <input checked id="visa" name="payment_method" value="COD" type="radio" >
+                                </div>
+                            {% endif %}
+
+<div class="form__radio">
+                                <img style="width: 51px;height: 29px;padding-right: 7px;"
+                                    src="{% static 'img/payment/razorpay.png' %}" alt="">
+                                <label for="razorpay">Razor Pay</label>
+                                <input id="razorpay" name="payment_method" type="radio" value="Razorpay">
+                            </div>
+                            <!-- <div class="form__radio">
+                                <video id="cod-video" width="50" height="50" autoplay muted loop style="border-radius: 100px;">
+                                    <source src="https://d1jj76g3lut4fe.cloudfront.net/processed/thumb/05ggV0j3NkL863RlQG.mp4" type="video/mp4">
+                                </video>
+                                <label for="visa">Wallet</label>
+                                <input checked id="visa" name="payment_method" value="wallet" type="radio" >
+                            </div> -->
+
+                                  <div class="form__radio">
+                                    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+                                    <dotlottie-player src="https://lottie.host/e470aa01-1034-4047-b3b9-2fc76c6e1e69/8Zwovk56Nx.json" background="transparent" speed="1" style="width: 61px; height: 35px;" loop autoplay></dotlottie-player>
+                                <label for="visa">Wallet</label>
+                                <input checked id="visa" name="payment_method" value="wallet" type="radio" >
+                            </div>
+                        </div><br><br>
+
+                        <button type="submit" class="site-btn">Place order</button>
+        </form>
+    </div>
+    </div>
+    </div>
+    </div>
+</section>
+{% else %}
+
+<section class="checkout spad">
+    <div class="container">
+        <div class="d-flex justify-content-end ">
+       
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
+                <select name="coupon_code" style="width: 253px; height: 56px; border-radius: 55px;">
+                    <option value="" class="text-center">Select a coupon</option>
+                    {% for coupon in coupons %}
+                    <option class="text-center" value="{{ coupon.coupon_code }}">{{ coupon.coupon_code }} -
+                        {{coupon.coupon_name }}</option>
+                    {% endfor %}
+                </select>
+                {% if coupon_applied == False %}
+                <button type="submit" class="site-btn">Apply</button>
+                {% else %}
+                <button type="submit" class="site-btn">Remove</button>
+                <input type="hidden" name="action" value="remove_coupon">
+                {% endif %}
+            </form>
+        </div><br><br>
+        
+        <!-- Personal info Section End -->
+<!-- Shop Cart Section End -->
+
+
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <h5 class="text-center"><strong>BILLING DETAILS</strong></h5><hr><br>
+                    <div class="row address">
+                        <form action="{% url 'add_address_' %}" method="post" class="checkout__form">
+                            {% csrf_token %}
+                            <div class="row d-flex justify-content-center">
+                                <div class="col-lg-8">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="checkout__form__input">
+                                                <p>First Name <span>*</span></p>
+                                                <input type="text" name="first_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="checkout__form__input">
+                                                <p>Last Name <span>*</span></p>
+                                                <input type="text" name="last_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="checkout__form__input">
+                                                <p>Email ID <span>*</span></p>
+                                                <input type="email" name="email" required>
+                                            </div>
+                                            <div class="checkout__form__input">
+                                                <p>Town/City <span>*</span></p>
+                                                <input type="text" name="city" required>
+                                            </div>
+                                            <div class="checkout__form__input">
+                                                <p>State <span>*</span></p>
+                                                <input type="text" name="state" required>
+                                            </div>
+                                            <div class="checkout__form__input">
+                                                <p>Country <span>*</span></p>
+                                                <input type="text" name="country" required>
+                                            </div>
+                                            <div class="checkout__form__input">
+                                                <p>Postcode/Zip <span>*</span></p>
+                                                <input type="text" maxlength="6" name="postal_code" required>
+                                            </div>
+                                            <div class="checkout__form__input">
+                                                <p>House Name <span>*</span></p>
+                                                <input type="text" name="house_name" required>
+                                            </div>
+                                            <div class="checkout__form__input">
+                                                <p>Mobile Number <span>*</span></p>
+                                                <input type="text" maxlength="12" name="mobile_number" required>
+                                            </div>
+                                            <div class="d-flex justify-content-center ">
+                                                <button type="submit" class="btn btn-outline-danger">Add Address</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="checkout__order">
+                        <h5 class="text-center">Your order</h5>
+                        <div class="checkout__order__product">
+                            <ul>
+                                <li>
+                                    <span class="top__text">Product</span>
+                                    <span class="top__text__right">Total</span>
+                                </li>
+                                {% for item in cartitems %}
+                                <li id="prod_name">{{ item.product.product.name }} X {{item.quantity}} <span
+                                        style="color: red;">₹
+                                        {{item.total_price }}</span><br></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <div class="checkout__order__total">
+                            <ul>
+                                <li>Subtotal : <span>₹ {{sub_total}}.0</span></li><br>
+                                {% if discount_amount %}
+                                <li>Discounted Price : <span>₹ {{ discount_amount }}.0</span></li>
+
+                                <br>
+                                {% endif %}
+                                <li>Shipping Fee : <span>₹ {{shipping_fee}}</span></li><br>
+                                <li id="totalAmount">Total : <span>₹ {{total}}.0</span></li>
+
+                            </ul>
+                        </div>
+
+                        <legend>Payment Method</legend>
+
+                        <div class="form__radios">
+                            {% if total > 3000 %}
+                                <div class="form__radio">
+                                    <video id="cod-video" width="50" height="50" autoplay muted loop style="border-radius: 100px;">
+                                        <source src="https://d1jj76g3lut4fe.cloudfront.net/processed/thumb/05ggV0j3NkL863RlQG.mp4" type="video/mp4">
+                                    </video>
+                                    <label for="visa"><strike>COD</strike></label>
+                                    <input checked id="visa" name="payment_method" value="COD" type="radio" disabled>
+                                </div>
+                                {% else %}
+                                <div class="form__radio">
+                                    <video id="cod-video" width="50" height="50" autoplay muted loop style="border-radius: 100px;">
+                                        <source src="https://d1jj76g3lut4fe.cloudfront.net/processed/thumb/05ggV0j3NkL863RlQG.mp4" type="video/mp4">
+                                    </video>
+                                    <label for="visa">COD</label>
+                                    <input checked id="visa" name="payment_method" value="COD" type="radio" >
+                                </div>
+                            {% endif %}
+                            <div class="form__radio">
+                                <img style="width: 58px;height: 14px;padding-right: 7px;"
+                                    src="{% static 'img/Razorpay-icon.png' %}" alt="">
+                                <label for="razorpay">Razor Pay</label>
+                                <input id="razorpay" name="payment_method" type="radio" value="Razorpay">
+                            </div>
+                            <!-- <div class="form__radio">
+                                <video id="cod-video" width="50" height="50" autoplay muted loop style="border-radius: 100px;">
+                                    <source src="https://d1jj76g3lut4fe.cloudfront.net/processed/thumb/05ggV0j3NkL863RlQG.mp4" type="video/mp4">
+                                </video>
+                                <label for="visa">Wallet</label>
+                                <input checked id="visa" name="payment_method" value="wallet" type="radio" >
+                            </div> -->
+
+                                  <div class="form__radio">
+                                    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+                                    <dotlottie-player src="https://lottie.host/e470aa01-1034-4047-b3b9-2fc76c6e1e69/8Zwovk56Nx.json" background="transparent" speed="1" style="width: 61px; height: 35px;" loop autoplay></dotlottie-player>
+                                <label for="visa">Wallet</label>
+                                <input checked id="visa" name="payment_method" value="wallet" type="radio" >
+                            </div>
+                        </div><br><br>
+
+                        <button type="submit" class="site-btn">Place order</button>
+                    </form>
+    </div>
+    </div>
+    </div>
+    </div>
+</section>
+{% endif %}
+<h5 class="d-flex justify-content-center">Add Address</h5>
+
+<!-- Button to toggle the address form -->
+<div class="d-flex justify-content-center mb-3">
+    <button id="toggleAddressForm" class="btn btn-primary shiny-button">Add New Address</button>
+</div>
+
+<!-- Address form, initially hidden -->
+<div id="addressFormContainer" style="display: none;">
+    <form action="{% url 'add_address' %}" method="post" class="checkout__form">
+        {% csrf_token %}
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="checkout__form__input">
+                            <p>First Name <span>*</span></p>
+                            <input type="text" name="first_name" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="checkout__form__input">
+                            <p>Last Name <span>*</span></p>
+                            <input type="text" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="checkout__form__input">
+                            <p>Email ID <span>*</span></p>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Town/City <span>*</span></p>
+                            <input type="text" name="city" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>State <span>*</span></p>
+                            <input type="text" name="state" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Country <span>*</span></p>
+                            <input type="text" name="country" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Postcode/Zip <span>*</span></p>
+                            <input type="text" maxlength="6" name="postal_code" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>House Name <span>*</span></p>
+                            <input type="text" name="house_name" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Mobile Number <span>*</span></p>
+                            <input type="text" maxlength="12" name="mobile_number" required>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success shiny-button">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+    </div>
+
+
+
+
+<!-- Checkout Section End -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var form = document.querySelector('.checkout__form');
+
+        // Add hidden input for payment status
+        var paymentStatusInput = document.createElement('input');
+        paymentStatusInput.type = 'hidden';
+        paymentStatusInput.name = 'payment_status';
+        paymentStatusInput.value = 'success'; // Default to success
+        form.appendChild(paymentStatusInput);
+
+        form.addEventListener('submit', function (event) {
+            var paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+
+            if (paymentMethod && paymentMethod.value === 'Razorpay') {
+                event.preventDefault(); // Prevent form submission
+                var totalAmountElement = document.getElementById('totalAmount');
+                var totalAmountText = totalAmountElement.textContent;
+                var totalAmount = totalAmountText.match(/\d+/)[0];
+
+                initializeRazorpay(totalAmount);
+            }
+        });
+
+        function initializeRazorpay(totalAmount) {
+            // Initialize Razorpay payment options
+            var options = {
+                "key": "rzp_test_i5YPKuq85Rzcc0",
+                "amount": totalAmount * 100,
+                "currency": "INR",
+                "name": "Saram",
+                "description": "Order payment",
+                "order_id": "{{ razorpay_order_id }}",
+                "handler": function (response) {
+                    if (response.error) {
+                        paymentStatusInput.value = 'failed';
+                        form.submit(); // Submit form with payment failed status
+                    } else {
+                        paymentStatusInput.value = 'success';
+                        form.submit(); // Submit form with payment success status
+                    }
+                },
+                "theme": {
+                    "color": "#ca1515"
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                paymentStatusInput.value = 'failed';
+                form.submit(); // Submit form with payment failed status
+            });
+            rzp.open();
+        }
+    });
+</script>
+
+<script>
+    // JavaScript to toggle the display of the address form
+document.getElementById('toggleAddressForm').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent the default button action
+
+    var addressFormContainer = document.getElementById('addressFormContainer');
+
+    if (addressFormContainer.style.display === 'none' || addressFormContainer.style.display === '') {
+        addressFormContainer.style.display = 'block';  // Show the form
+        this.style.display = 'none'; // Hide the button after click
+    }
+});
+
+</script>
+
+
+{% endblock content %}

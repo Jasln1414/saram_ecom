@@ -1,0 +1,655 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+
+/* General Form Styling */
+
+/* Use more specific selectors if needed */
+
+body {
+    margin: 0; /* Remove default body margin */
+    padding: 0; /* Remove default body padding */
+}
+
+.container {
+    width: 100%;
+    max-width: 95%; /* Adjust to a smaller value if needed */
+    margin: 0 auto;
+    padding: 10px; /* Reduce padding if needed */
+    
+}
+
+#filter-form {
+    background: linear-gradient(145deg, #d0d9df, #f0f4f7);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 04px8pxrgba(0, 0, 0, 0.1), 0020pxrgba(255, 255, 255, 0.5);
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+#filter-form:hover {
+    background: linear-gradient(145deg, #f0f4f7, #d0d9df);
+    box-shadow: 06px12pxrgba(0, 0, 0, 0.2), 0025pxrgba(255, 255, 255, 0.6);
+}
+
+/* Dropdown Styling */
+.dropdown-select {
+    background: linear-gradient(145deg, #eccdef, #e0e0e0);
+    border: 2px solid #7a5555;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+}
+
+.dropdown-select:hover {
+    background: linear-gradient(145deg, #e0e0e0, #f0f0f0);
+    border-color: #b3b3b3;
+}
+
+.dropdown-select:focus {
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    border-color: #a0a0a0;
+    outline: none;
+}
+
+option {
+    background: #ffffff;
+    color: #333;
+    padding: 10px;
+}
+
+/* Color Filter Section */
+.color-filter-container {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(145deg, #e3b2e6, #db99af);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 04px8pxrgba(0, 0, 0, 0.1), 0025pxrgba(255, 255, 255, 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
+.color-filter-container:hover {
+    box-shadow: 08px16pxrgba(0, 0, 0, 0.2), 0030pxrgba(255, 255, 255, 0.5);
+}
+
+
+.color-filter {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.color-filter:hover {
+    background: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.color-name {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Product Items Styling */
+.product__item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product__item__pic {
+    position: relative;
+    overflow: hidden;
+}
+
+.product__item__pic img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+}
+
+.product__item__pic:hover img {
+    opacity: 0.8;
+}
+
+.label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.product__item__text {
+    padding: 15px;
+    text-align: center;
+}
+
+.product__item__text h6 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.product__price {
+    font-size: 18px;
+    color: #e53935;
+}
+
+/* Button Styling */
+.btn {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #d32f2f;
+}
+
+/* Pagination Styling */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+.page-link {
+    display: block;
+    padding: 10px 15px;
+    border-radius: 50%;
+    background: #e53935;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.page-link:hover {
+    background: #d32f2f;
+    color: #fff;
+}
+
+.page-item.active .page-link {
+    background: #fff;
+    color: #e53935;
+    border: 2px solid #e53935;
+}
+
+.page-link[aria-label="Previous"], .page-link[aria-label="Next"] {
+    border-radius: 50%;
+}
+
+
+
+/* Container for the product list */
+.col-lg-9 .row {
+    margin: 0 -15px;
+}
+
+/* Individual product items */
+
+
+.product__item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Product image container */
+
+
+
+
+.product__item__pic:hover {
+    transform: scale(1.05);
+}
+
+/* Label for new products or out-of-stock status */
+.label.new {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #5cb85c;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.label.new[style="background-color: red;"] {
+    background-color: red;
+}
+
+/* Product hover icons */
+.product__hover {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.product__hover li {
+    display: inline-block;
+}
+
+.product__hover .image-popup {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.product__hover .image-popup:hover {
+    background-color: #5cb85c;
+}
+
+.product__hover .btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.product__hover .btn:hover {
+    background-color: #d9534f;
+}
+
+/* Product text container */
+.product__item__text {
+    padding: 15px;
+    text-align: center;
+}
+
+.product__item__text h6 a {
+    color: #333;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+.product__item__text h6 a:hover {
+    color: #5cb85c;
+}
+
+/* Original price */
+.original-price {
+    color: #160b0b;
+    
+    margin-bottom: 5px;
+}
+
+/* Offer price */
+.offer-price {
+    color:red;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+/* Discount percentages */
+.discount, .category-discount {
+    color:#5cb85c;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.section-title {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.section-title h4 {
+    margin: 0;
+}
+
+.dropdown-select {
+    background: linear-gradient(145deg, #eccdef, #e0e0e0);
+    border: 2px solid #7a5555;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    width: 200px;
+}
+
+.dropdown-select:hover {
+    background: linear-gradient(145deg, #e0e0e0, #f0f0f0);
+    border-color: #b3b3b3;
+}
+
+.dropdown-select:focus {
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    border-color: #a0a0a0;
+    outline: none;
+}
+
+.btn {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #d32f2f;
+}
+
+.section-title .btn-danger {
+    margin-left: 20px;
+}
+
+.sidebar__categories, .brand-dropdown, #sort-by {
+    width: 100%; /* Ensures full width */
+    margin-bottom: 15px; /* Add space between filters */
+}
+
+.dropdown-select {
+    width: 100%; /* Ensures the dropdowns are the same width */
+}
+/* Basic Text Styles */
+body {
+    font-family: 'Roboto', sans-serif; /* A clean, modern font */
+    color: #333; /* Dark gray for text */
+    line-height: 1.6; /* Better readability */
+    font-size: 16px; /* Default font size */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #444; /* Slightly lighter gray for headings */
+    margin-bottom: 20px; /* Spacing below headings */
+    font-weight: 700; /* Bold font weight */
+}
+
+h1 {
+    font-size: 2.5em; /* Larger font size for main heading */
+}
+
+h2 {
+    font-size: 2em; /* Subheading size */
+}
+
+h3 {
+    font-size: 1.75em; /* Smaller subheading */
+}
+
+h4, h5, h6 {
+    font-size: 1.5em; /* Even smaller headings */
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 20px; /* Spacing below paragraphs */
+    font-size: 1em; /* Default font size */
+    color: #555; /* Softer gray for paragraph text */
+}
+
+/* Links */
+a {
+    color: #3498db; /* Primary color for links */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+a:hover {
+    color: #2980b9; /* Darker shade on hover */
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Lists */
+ul, ol {
+    margin-bottom: 20px; /* Spacing below lists */
+    padding-left: 20px; /* Indent lists */
+}
+
+ul li, ol li {
+    margin-bottom: 10px; /* Spacing between list items */
+    color: #666; /* Softer gray for list items */
+}
+
+/* Buttons */
+button, .btn {
+    font-family: 'Roboto', sans-serif; /* Same font as text */
+    font-size: 1em; /* Button text size */
+    padding: 10px 20px; /* Padding inside buttons */
+    background-color: #e74c3c; /* Button background color */
+    color: #e37cc8; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth background transition */
+}
+
+button:hover, .btn:hover {
+    background-color: #c0392b; /* Darker background on hover */
+}
+
+
+/* Adjusting the button height */
+button, .btn {
+    font-family: 'Roboto', sans-serif; /* Keep the font consistent */
+    font-size: 1em; /* Ensure the font size is appropriate */
+    padding: 12px 20px; /* Increase padding for more height */
+    height: auto; /* Let the height adjust based on padding */
+    background-color: #e74c3c; /* Background color */
+    color: #ef9cef; /* White text */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth background transition */
+}
+
+button:hover, .btn:hover {
+    background-color: #c0392b; /* Darker background on hover */
+}
+/* Adjusting the dropdown button height and padding */
+.dropdown-select {
+    font-family: 'Roboto', sans-serif; /* Consistent font */
+    font-size: 1.1em; /* Slightly larger font size */
+    padding: 12px 20px; /* Increase padding */
+    height: auto; /* Automatic height based on content */
+    background-color: #d5bad2; /* Light background color */
+    color: #333; /* Darker text color for better readability */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 100%; /* Make sure it spans the full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* General Styling for the Dropdown */
+#sort-by {
+    background: #dbbcdb; /* White background */
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    color: #333; /* Dark grey text */
+    font-size: 16px; /* Larger font size for better readability */
+    padding: 10px 15px; /* Padding inside the dropdown */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+}
+
+/* Dropdown Option Styling */
+#sort-by option {
+    padding: 10px; /* Padding inside each option */
+}
+
+/* Hover Effect */
+#sort-by:hover {
+    border-color: #007bff; /* Blue border on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Slightly larger shadow */
+}
+
+/* Focus Effect */
+#sort-by:focus {
+    border-color: #007bff; /* Blue border when focused */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Blue shadow */
+}
+/* General Styling for Sidebar */
+.shop__sidebar {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Sections */
+.sidebar__section {
+    margin-bottom: 20px;
+}
+
+/* Dropdown Styling */
+.dropdown-select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 10px;
+}
+
+/* Color Filter Container */
+.color-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Color Filter Items */
+.color-filter {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+/* Color Swatch */
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* Color Name */
+.color-name {
+    font-size: 14px;
+}
+
+/* Search Form */
+.search-form .input-group {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Button Styling */
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+
+
+</style>
+
+
+
+
+
+
+
+<html>
+<head>
+    <title>Search Products</title>
+</head>
+<body>
+    <h1>Search Products</h1>
+
+    <form method="GET" action="{% url 'search_products' %}">
+        <input type="text" name="query" value="{{ query }}" placeholder="Search products...">
+        <select name="category">
+            <option value="">All Categories</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id|stringformat:"s" == request.GET.category %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <select name="brand">
+            <option value="">All Brands</option>
+            {% for brand in brands %}
+                <option value="{{ brand.id }}" {% if brand.id|stringformat:"s" == request.GET.brand %}selected{% endif %}>
+                    {{ brand.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Results:</h2>
+    <ul>
+        {% for product in products %}
+            <li>
+                <h3>{{ product.name }}</h3>
+                <p>Category: {{ product.category.name }}</p>
+                <p>Brand: {{ product.brand.name }}</p>
+                <p>Price: {{ product.price }}</p>
+            </li>
+        {% empty %}
+            <p>No products found.</p>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+{% endblock content %}

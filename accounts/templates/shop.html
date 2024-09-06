@@ -1,0 +1,1214 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+
+/* General Form Styling */
+
+/* Use more specific selectors if needed */
+
+body {
+    margin: 0; /* Remove default body margin */
+    padding: 0; /* Remove default body padding */
+}
+
+.container {
+    width: 100%;
+    max-width: 95%; /* Adjust to a smaller value if needed */
+    margin: 0 auto;
+    padding: 10px; /* Reduce padding if needed */
+    
+}
+
+#filter-form {
+    background: linear-gradient(145deg, #d0d9df, #f0f4f7);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 04px8pxrgba(0, 0, 0, 0.1), 0020pxrgba(255, 255, 255, 0.5);
+    height: 550px;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+#filter-form:hover {
+    background: linear-gradient(145deg, #f0f4f7, #d0d9df);
+    box-shadow: 06px12pxrgba(0, 0, 0, 0.2), 0025pxrgba(255, 255, 255, 0.6);
+}
+
+/* Dropdown Styling */
+.dropdown-select {
+    background: linear-gradient(145deg, #eccdef, #e0e0e0);
+    border: 2px solid #7a5555;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 300px;
+}
+
+.dropdown-select:hover {
+    background: linear-gradient(145deg, #e0e0e0, #f0f0f0);
+    border-color: #b3b3b3;
+}
+
+.dropdown-select:focus {
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    border-color: #a0a0a0;
+    outline: none;
+}
+
+option {
+    background: #ffffff;
+    color: #333;
+    padding: 10px;
+}
+
+/* Color Filter Section */
+.color-filter-container {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(145deg, #e3b2e6, #db99af);
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 04px8pxrgba(0, 0, 0, 0.1), 0025pxrgba(255, 255, 255, 0.3);
+    transition: box-shadow 0.3s ease;
+    width: auto;
+}
+
+.color-filter-container:hover {
+    box-shadow: 08px16pxrgba(0, 0, 0, 0.2), 0030pxrgba(255, 255, 255, 0.5);
+}
+
+
+.color-filter {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.color-filter:hover {
+    background: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.color-name {
+    font-size: 14px;
+    color: #333;
+}
+
+/* Product Items Styling */
+.product__item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.product__item__pic {
+    position: relative;
+    overflow: hidden;
+}
+
+.product__item__pic img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+}
+
+.product__item__pic:hover img {
+    opacity: 0.8;
+}
+
+.label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.product__item__text {
+    padding: 15px;
+    text-align: center;
+}
+
+.product__item__text h6 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.product__price {
+    font-size: 18px;
+    color: #e53935;
+}
+
+/* Button Styling */
+.btn {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #d32f2f;
+}
+
+/* Pagination Styling */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.page-item {
+    margin: 0 5px;
+}
+
+.page-link {
+    display: block;
+    padding: 10px 15px;
+    border-radius: 50%;
+    background: #e53935;
+    color: #fff;
+    text-decoration: none;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.page-link:hover {
+    background: #d32f2f;
+    color: #fff;
+}
+
+.page-item.active .page-link {
+    background: #fff;
+    color: #e53935;
+    border: 2px solid #e53935;
+}
+
+.page-link[aria-label="Previous"], .page-link[aria-label="Next"] {
+    border-radius: 50%;
+}
+
+
+
+/* Container for the product list */
+.col-lg-9 .row {
+    margin: 0 -15px;
+}
+
+/* Individual product items */
+
+
+.product__item:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Product image container */
+
+
+
+
+.product__item__pic:hover {
+    transform: scale(1.05);
+}
+
+/* Label for new products or out-of-stock status */
+.label.new {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #5cb85c;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.label.new[style="background-color: red;"] {
+    background-color: red;
+}
+
+/* Product hover icons */
+.product__hover {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.product__hover li {
+    display: inline-block;
+}
+
+.product__hover .image-popup {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.product__hover .image-popup:hover {
+    background-color: #5cb85c;
+}
+
+.product__hover .btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 10px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.product__hover .btn:hover {
+    background-color: #d9534f;
+}
+
+/* Product text container */
+.product__item__text {
+    padding: 15px;
+    text-align: center;
+}
+
+.product__item__text h6 a {
+    color: #333;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+.product__item__text h6 a:hover {
+    color: #5cb85c;
+}
+
+/* Original price */
+.original-price {
+    color: #160b0b;
+    
+    margin-bottom: 5px;
+}
+
+/* Offer price */
+.offer-price {
+    color:red;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+/* Discount percentages */
+.discount, .category-discount {
+    color:#5cb85c;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.section-title {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.section-title h4 {
+    margin: 0;
+}
+
+.dropdown-select {
+    background: linear-gradient(145deg, #eccdef, #e0e0e0);
+    border: 2px solid #7a5555;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    color: #333;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    width: 200px;
+}
+
+.dropdown-select:hover {
+    background: linear-gradient(145deg, #e0e0e0, #f0f0f0);
+    border-color: #b3b3b3;
+}
+
+.dropdown-select:focus {
+    background: linear-gradient(145deg, #f0f0f0, #e0e0e0);
+    border-color: #a0a0a0;
+    outline: none;
+}
+
+.btn {
+    background: #e53935;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #d32f2f;
+}
+
+.section-title .btn-danger {
+    margin-left: 20px;
+}
+
+.sidebar__categories, .brand-dropdown, #sort-by {
+    width: 100%; /* Ensures full width */
+    margin-bottom: 15px; /* Add space between filters */
+    
+}
+
+.dropdown-select {
+    width: 100%; /* Ensures the dropdowns are the same width */
+}
+/* Basic Text Styles */
+body {
+    font-family: 'Roboto', sans-serif; /* A clean, modern font */
+    color: #333; /* Dark gray for text */
+    line-height: 1.6; /* Better readability */
+    font-size: 16px; /* Default font size */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #444; /* Slightly lighter gray for headings */
+    margin-bottom: 20px; /* Spacing below headings */
+    font-weight: 700; /* Bold font weight */
+}
+
+h1 {
+    font-size: 2.5em; /* Larger font size for main heading */
+}
+
+h2 {
+    font-size: 2em; /* Subheading size */
+}
+
+h3 {
+    font-size: 1.75em; /* Smaller subheading */
+}
+
+h4, h5, h6 {
+    font-size: 1.5em; /* Even smaller headings */
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 20px; /* Spacing below paragraphs */
+    font-size: 1em; /* Default font size */
+    color: #555; /* Softer gray for paragraph text */
+}
+
+/* Links */
+a {
+    color: #3498db; /* Primary color for links */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+a:hover {
+    color: #2980b9; /* Darker shade on hover */
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Lists */
+ul, ol {
+    margin-bottom: 20px; /* Spacing below lists */
+    padding-left: 20px; /* Indent lists */
+}
+
+ul li, ol li {
+    margin-bottom: 10px; /* Spacing between list items */
+    color: #666; /* Softer gray for list items */
+}
+
+/* Buttons */
+button, .btn {
+    font-family: 'Roboto', sans-serif; /* Same font as text */
+    font-size: 1em; /* Button text size */
+    padding: 10px 20px; /* Padding inside buttons */
+    background-color: #e74c3c; /* Button background color */
+    color: #e37cc8; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth background transition */
+}
+
+button:hover, .btn:hover {
+    background-color: #c0392b; /* Darker background on hover */
+}
+
+
+/* Adjusting the button height */
+button, .btn {
+    font-family: 'Roboto', sans-serif; /* Keep the font consistent */
+    font-size: 1em; /* Ensure the font size is appropriate */
+    padding: 12px 20px; /* Increase padding for more height */
+    height: auto; /* Let the height adjust based on padding */
+    background-color: #e74c3c; /* Background color */
+    color: #ef9cef; /* White text */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth background transition */
+}
+
+button:hover, .btn:hover {
+    background-color: #c0392b; /* Darker background on hover */
+}
+/* Adjusting the dropdown button height and padding */
+.dropdown-select {
+    font-family: 'Roboto', sans-serif; /* Consistent font */
+    font-size: 1.1em; /* Slightly larger font size */
+    padding: 12px 20px; /* Increase padding */
+    height: auto; /* Automatic height based on content */
+    background-color: #d5bad2; /* Light background color */
+    color: #333; /* Darker text color for better readability */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 100%; /* Make sure it spans the full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* General Styling for the Dropdown */
+#sort-by {
+    background: #dbbcdb; /* White background */
+    border: 1px solid #ddd; /* Light grey border */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    color: #333; /* Dark grey text */
+    font-size: 16px; /* Larger font size for better readability */
+    padding: 10px 15px; /* Padding inside the dropdown */
+    transition: all 0.3s ease; /* Smooth transition for hover effect */
+    
+}
+
+/* Dropdown Option Styling */
+#sort-by option {
+    padding: 10px; /* Padding inside each option */
+}
+
+/* Hover Effect */
+#sort-by:hover {
+    border-color: #007bff; /* Blue border on hover */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Slightly larger shadow */
+}
+
+/* Focus Effect */
+#sort-by:focus {
+    border-color: #007bff; /* Blue border when focused */
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Blue shadow */
+}
+/* General Styling for Sidebar */
+.shop__sidebar {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Sections */
+.sidebar__section {
+    margin-bottom: 20px;
+}
+
+/* Dropdown Styling */
+.dropdown-select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 10px;
+}
+
+/* Color Filter Container */
+.color-filter-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Color Filter Items */
+.color-filter {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+/* Color Swatch */
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* Color Name */
+.color-name {
+    font-size: 14px;
+}
+
+/* Search Form */
+.search-form .input-group {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Button Styling */
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Container for the search form */
+.search-form-container {
+    display: flex; /* Align items horizontally */
+    justify-content: center; /* Center the items horizontally */
+    align-items: center; /* Center the items vertically */
+    margin-bottom: 20px; /* Add some space below the form */
+    padding: 10px; /* Add padding around the form */
+}
+
+/* Style for the search input */
+.search-form-container input[type="text"] {
+    width: 200px; /* Set the width of the input field */
+    padding: 10px 15px; /* Add padding inside the input */
+    border: 2px solid #f9f9f9; /* Border color and thickness */
+    border-radius: 30px; /* Rounded corners */
+    outline: none; /* Remove the default outline */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    font-size: 16px; /* Font size for the input text */
+    background-color: #fbf5f9;
+}
+
+/* Hover and focus effect for the search input */
+.search-form-container input[type="text"]:focus,
+.search-form-container input[type="text"]:hover {
+    border-color: #3498db; /* Change border color on hover/focus */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Darker shadow */
+}
+
+/* Style for the search button */
+.search-form-container button[type="submit"] {
+    padding: 10px 20px; /* Padding for the button */
+    background-color: #fefefe; /* Button background color */
+    color: #fff; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 30px; /* Rounded corners */
+    margin-left: 10px; /* Space between input and button */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    font-size: 16px; /* Font size for button text */
+}
+
+/* Hover effect for the search button */
+.search-form-container button[type="submit"]:hover {
+    background-color: #b929a6; /* Darker shade of button color */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .search-form-container {
+        flex-direction: column; /* Stack items vertically */
+    }
+    
+    .search-form-container input[type="text"] {
+        width: 100%; /* Full width for smaller screens */
+        margin-bottom: 10px; /* Space below the input */
+    }
+    
+    .search-form-container button[type="submit"] {
+        width: 1px; /* Full width for smaller screens */
+    }
+}
+
+.search-form-container {
+    position: relative; /* Ensure the container is positioned relatively */
+}
+
+.input-container {
+    position: relative; /* Position relative to place the icon */
+}
+
+#search-input {
+    padding: 10px 40px 10px 10px; /* Add padding to make space for the icon */
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.search-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 40px; /* Width of the button */
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-button i {
+    color: #333; /* Color of the search icon */
+    font-size: 16px; /* Size of the icon */
+}
+
+/* Optional: Style the button on hover */
+.search-button:hover i {
+    color: #007bff; /* Change color on hover */
+}
+
+
+
+
+
+.search-form-container {
+    position: relative; /* Ensure the container is positioned relatively */
+}
+
+.input-container {
+    position: relative; /* Position relative to place the icon */
+    display: flex; /* Use flexbox to align items */
+    align-items: center; /* Center items vertically */
+    width: 500PX;
+    border-radius:25px ;
+}
+
+#search-input {
+    padding: 10px 40px 10px 10px; /* Add padding to make space for the icon */
+    width: 100%; /* Full width of the container */
+    box-sizing: border-box; /* Include padding in width calculation */
+    border: 1px solid #f0d7f0; /* Add border for better visibility */
+    border-radius: 40px; /* Rounded corners */
+}
+
+/* Base styles for the search button */
+.search-button {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Position with some margin from the right edge */
+    transform: translateY(-50%); /* Center the button vertically */
+    height: 24px; /* Adjust height if needed */
+    width: 24px; /* Adjust width if needed */
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-button i {
+    color: #333; /* Color of the search icon */
+    font-size: 16px; /* Size of the icon */
+}
+
+/* Optional: Style the button on hover */
+.search-button:hover i {
+    color: #007bff; /* Change color on hover */
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+    .search-button {
+        right: 8px; /* Reduce margin from the right edge */
+        height: 20px; /* Adjust height for medium screens */
+        width: 20px; /* Adjust width for medium screens */
+    }
+
+    .search-button i {
+        font-size: 14px; /* Adjust icon size for medium screens */
+    }
+}
+
+@media (max-width: 992px) {
+    .search-button {
+        right: 6px; /* Further reduce margin from the right edge */
+        height: 18px; /* Adjust height for small screens */
+        width: 18px; /* Adjust width for small screens */
+    }
+
+    .search-button i {
+        font-size: 12px; /* Adjust icon size for small screens */
+    }
+}
+
+@media (max-width: 576px) {
+    .search-button {
+        right: 4px; /* Reduce margin from the right edge for very small screens */
+        height: 16px; /* Adjust height for very small screens */
+        width: 1px; /* Adjust width for very small screens */
+    }
+
+    .search-button i {
+        font-size: 10px; /* Adjust icon size for very small screens */
+    }
+}
+
+
+
+/* shop.css */
+
+
+</style>
+
+</style>
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'index' %}">Home</a>
+                    <a href="{% url 'shop_page' %}">Shop</a>
+                </div>
+                <div class="search-form-container">
+                    <form method="get" action="{% url 'shop_page' %}" id="search-form">
+                        <div class="input-container">
+                            <input type="text" id="search-input" name="search" value="{{ search_query }}" placeholder="Search products..." autocomplete="off">
+                            <button type="submit" class="search-button">
+                                <i class="fa fa-search"></i> <!-- Font Awesome Search Icon -->
+                            </button>
+                        </div>
+                        <div id="autocomplete-results" style="display:none; position: absolute; border: 1px solid #ddd; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 4px; z-index: 1000;"></div>
+                    </form>
+                </div>
+                
+                <style>
+                /* Style for autocomplete results container */
+                #autocomplete-results {
+                    width: calc(25%- 2px); /* Make the dropdown width match the input width */
+                }
+                
+                /* Style for each result item */
+                #autocomplete-results ul {
+                    list-style-type: none;
+                    margin: 0;
+                    padding: 0;
+                }
+                
+                #autocomplete-results li {
+                    border-bottom: 1px solid #ddd;
+                }
+                
+                #autocomplete-results a {
+                    display: block;
+                    padding: 10px;
+                    text-decoration: none;
+                    color: #333;
+                    transition: background-color 0.3s ease;
+                }
+                
+                #autocomplete-results a:hover,
+                #autocomplete-results a:focus {
+                    background-color: #f4f4f4;
+                    color: #000;
+                    outline: none;
+                }
+                
+                /* Highlight categories, brands, and products sections */
+                #autocomplete-results strong {
+                    display: block;
+                    padding: 8px 10px;
+                    background-color: #f8f8f8;
+                    color: #555;
+                }
+                </style>
+                
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const searchInput = document.getElementById('search-input');
+                    const resultsContainer = document.getElementById('autocomplete-results');
+                    
+                    searchInput.addEventListener('input', function() {
+                        const query = searchInput.value;
+                        if (query.length > 0) {
+                            fetch(`/autocomplete/?query=${query}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    let html = '<ul>';
+                                    
+                                    if (data.products.length) {
+                                        html += '<li><strong>Products:</strong><ul>';
+                                        data.products.forEach(product => {
+                                            html += `<li><a href="#" class="autocomplete-item" data-id="${product.id}" data-type="product">${product.name}</a></li>`;
+                                        });
+                                        html += '</ul></li>';
+                                    }
+                                    
+                                    if (data.brands.length) {
+                                        html += '<li><strong>Brands:</strong><ul>';
+                                        data.brands.forEach(brand => {
+                                            html += `<li><a href="#" class="autocomplete-item" data-id="${brand.id}" data-type="brand">${brand.name}</a></li>`;
+                                        });
+                                        html += '</ul></li>';
+                                    }
+                                    
+                                    if (data.categories.length) {
+                                        html += '<li><strong>Categories:</strong><ul>';
+                                        data.categories.forEach(category => {
+                                            html += `<li><a href="#" class="autocomplete-item" data-id="${category.id}" data-type="category">${category.name}</a></li>`;
+                                        });
+                                        html += '</ul></li>';
+                                    }
+                                    
+                                    html += '</ul>';
+                                    resultsContainer.innerHTML = html;
+                                    resultsContainer.style.display = 'block';
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching autocomplete suggestions:', error);
+                                });
+                        } else {
+                            resultsContainer.style.display = 'none';
+                        }
+                    });
+                    
+                    // Handle suggestion clicks
+                    resultsContainer.addEventListener('click', function(event) {
+                        if (event.target.classList.contains('autocomplete-item')) {
+                            const selectedItem = event.target;
+                            searchInput.value = selectedItem.textContent;
+                            document.getElementById('search-form').submit();
+                        }
+                    });
+                
+                    // Hide results when clicking outside
+                    document.addEventListener('click', function(event) {
+                        if (!searchInput.contains(event.target) && !resultsContainer.contains(event.target)) {
+                            resultsContainer.style.display = 'none';
+                        }
+                    });
+                });
+                </script>
+                
+                
+                
+               
+                    
+                  
+
+                   
+                    <!-- Your product listing code -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Shop Section Begin -->
+ <!-- Shop Section Begin -->
+<section class="shop spad">
+    <div class="container">
+        <div class="row">
+            
+          
+                   
+
+                    
+                    <!-- Sidebar Begin -->
+                   
+                        <form id="filter-form" action="{% url 'filtered_products_cat' %}" method="get">
+                            <!-- Categories Dropdown -->
+                            <div class="sidebar__section mb-3">
+                               
+                                <select name="category" id="categoryDropdown" class="dropdown-select form-control" onchange="this.form.submit()">
+                                    <option value="">Category</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id|stringformat:"i" in selected_category %} selected {% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Brands Dropdown -->
+                            <div class="sidebar__section mb-3">
+                                
+                                <select class="dropdown-select form-control" id="brandDropdown" name="brand" onchange="this.form.submit()">
+                                    <option value="">All Brands</option>
+                                    {% for brand in brands %}
+                                    <option value="{{ brand.id }}" {% if brand.id|stringformat:"i" in selected_brand %} selected {% endif %}>
+                                        {{ brand.name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Sort Options -->
+                            <div class="sidebar__section mb-3">
+                               
+                                <select name="ordering" id="sort-by" class="form-control" onchange="window.location.href=this.value;">
+                                    <option value="{% url 'shop_page' %}" id="placeholder" disabled selected hidden>Sort</option>
+                                    <option value="{% url 'shop_page' %}?ordering=name">A-Z</option>
+                                    <option value="{% url 'shop_page' %}?ordering=-name">Z-A</option>
+                                    <option value="{% url 'shop_page' %}?ordering=price">Price: Low to High</option>
+                                    <option value="{% url 'shop_page' %}?ordering=-price">Price: High to Low</option>
+                                    <option value="{% url 'shop_page' %}?ordering=created_at">New arrivals</option>
+                                </select>
+                            </div>
+
+                            <!-- Shop by Color -->
+                            <div class="sidebar__section mb-3">
+                                <label class="form-label">Color</label>
+                                <div class="color-filter-container">
+                                    {% for color in colors %}
+                                    <div class="color-filter" onclick="filterByColor('{{ color.color }}')">
+                                        <div class="color-swatch" style="background-color: {{ color.color }};"></div>
+                                        <span class="color-name">{{ color.color }}</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </form>
+            
+    
+<!-- Shop Section End -->
+
+
+    
+    
+    
+    
+            <!-- Sidebar End -->
+
+            <!-- Products Section Begin -->
+            <div class="col-lg-9 col-md-9">
+                <div class="row">
+                    {% if products_color %}
+                        {% for color in products_color %}
+                            <div class="col-lg-4 col-md-6">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg">
+                                        <a href="{% url 'product_detail' color.id %}">
+                                            <img src="{{ color.image1.url }}" alt="">
+                                        </a>
+                                        {% if color.is_listed and color.product.category.is_listed %}
+                                            <div class="label new" style="background-color: rgb(164, 9, 71);">New</div>
+                                        {% else %}
+                                            <div class="label new" style="background-color: rgb(255, 0, 0);">Out Of Stock</div>
+                                        {% endif %}
+                                        <ul class="product__hover">
+                                            <li>
+                                                <a href="{{ color.image1.url }}" class="image-popup">
+                                                    <span class="arrow_expand"></span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <form action="{% url 'wishlist_add' color.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button class="btn" type="submit" style="border-radius: 252px; width: 48px; height: 48px; padding-left: 0px; padding-top: 0px;">
+                                                        <span class="icon_heart_alt"></span>
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="product__item__text">
+                                        <h6><a href="{% url 'product_detail' color.id %}">{{ color.product.name }}</a></h6>
+                                        <P class="original-price">${{ color.product.price }}</P>
+                                        {% if color.product.offer_price < color.product.price %}
+                                            <p class="offer-price">Offer Price: ${{ color.product.offer_price }}</p>
+                                            {% if color.product.category.categoryoffer.discount_percentage > color.product.percentage %}
+                                                <h4 class="category-discount"><strong>{{ color.product.category.categoryoffer.discount_percentage }}% OFF</strong></h4>
+                                            {% else %}
+                                                <h4 class="category-discount"><strong>{{ color.product.percentage }}% OFF</strong></h4>
+                                            {% endif %}
+                                        {% else %}
+                                            <h5>No current offers</h5>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-lg-12">
+                            <div class="d-flex justify-content-center">
+                                <h3>No Products Found</h3>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Products Section End -->
+
+            <!-- Pagination Begin -->
+            <div class="container">
+                <div class="d-flex justify-content-center">
+                    {% if is_paginated %}
+                    <nav aria-label="pagination">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Pagination End -->
+        </div>
+        </div>
+     </section>
+
+<!-- Shop Section End -->
+                                  
+   
+
+            <!-- Product List Begin -->
+
+
+<STYLE>
+
+.suggestions-list {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    z-index: 1000;
+    display: none;
+}
+
+.suggestions-list li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
+
+</STYLE>
+_<script>
+function finalurl() {
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+
+    const sortValue = document.getElementById('sort-by').value;
+    console.log('Selected sort value:', sortValue); // Debugging line
+
+    if (sortValue) {
+        params.set('ordering', sortValue);
+    } else {
+        params.delete('ordering');
+    }
+
+    window.location.href = url.pathname + '?' + params.toString();
+}
+
+
+    var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+      return new bootstrap.Dropdown(dropdownToggleEl)
+    })
+</script>
+
+<script>
+    function finalurl() {
+        var url = new URL(window.location.href);
+        var search_params = url.searchParams;
+        var selectedOrdering = document.getElementById("sort-by").value;
+        search_params.set('ordering', selectedOrdering);
+        url.search = search_params.toString();
+        document.getElementById('placeholder').innerHTML = "Sort: " + document.getElementById(selectedOrdering).innerHTML;
+        return url.toString();
+    }
+</script>
+
+    
+
+<script>
+    function filterByColor(color) {
+        var form = document.getElementById('filter-form');
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'color';
+        input.value = color;
+        form.appendChild(input);
+        form.submit();
+    }
+
+   
+
+</script>
+
+{% endblock %}

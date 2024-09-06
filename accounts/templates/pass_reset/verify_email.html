@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 1s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center">
+                           
+                                
+                            <h2>Forgot Password?</h2>
+                            <p>Enter your email to reset your password.</p>
+                        </div>
+                        <form action="{% url 'verify_email' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input required  type="email" class="form-control" name="email" aria-describedby="emailHelp"
+                                    placeholder="Enter email">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Reset Password</button>
+                        </form>
+                        <br>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+                        <script>
+                            {% if messages %}
+                            {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                            {% elif message.tags == 'success' %}
+                            swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                            {% else %}
+                            swal("Message", "{{ message }}"); // Display general message
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </script>
+            <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

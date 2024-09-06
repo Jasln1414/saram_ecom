@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 d-flex align-items-center">
+      <div class="form-container">
+        <div class="welcome-msg">Welcome !!!</div>
+        <div class="signup-msg">Create an account</div>
+        <form id="register-form" method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="f_name">First Name</label>
+            <input autocomplete="off" type="text" class="form-control" id="f_name" name="f_name"
+              placeholder="Enter your first name" required value="{{ form_data.first_name }}">
+            <span id="f_name-error" class="error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="l_name">Last Name</label>
+            <input autocomplete="off" type="text" class="form-control" id="l_name" name="l_name"
+              placeholder="Enter your last name" required value="{{ form_data.last_name }}">
+            <span id="l_name-error" class="error"></span>
+          </div>
+          
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input autocomplete="off" type="text" class="form-control" id="username" name="username"
+              placeholder="Enter a username" required value="{{ form_data.username }}">
+            <span id="username-error" class="error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required
+              value="{{ form_data.email }}">
+            <span id="email-error" class="error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input autocomplete="off" type="password" class="form-control" id="pass1" name="pass1"
+              placeholder="Enter a password" required>
+            <span id="pass1-error" class="error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="confirm_pass2">Confirm Password</label>
+            <input autocomplete="off" type="password" class="form-control" id="pass2" name="pass2"
+              placeholder="Confirm your password" required>
+            <span id="pass2-error" class="error"></span>
+          </div>
+          <div class="form-group">
+            <label for="referral_code">Referral Code(Optional)</label>
+            <input autocomplete="off" type="text" class="form-control" id="referral_code" name="referral_code" value=""
+              placeholder="Enter your referral code">
+            <span id="referral_code-error" class="error"></span>
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-block rounded">Sign Up</button>
+        </form>
+
+        <div class="login-msg text-center ">
+          <span>I already have an account?</span>
+          <a href="{% url 'login' %}" class="sign-in-link align-content-sm-center ">Sign in</a>
+        </div>
+        <br>
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script>
+          {% if messages %}
+          {% for message in messages %}
+          {% if message.tags == 'error' %}
+          swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+          {% elif message.tags == 'success' %}
+          swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+          {% else %}
+          swal("Message", "{{ message }}"); // Display general message
+          {% endif %}
+          {% endfor %}
+          {% endif %}
+        </script>
+      </div>
+    </div>
+   
+  </div>
+</div>
+
+<style>
+  .container-fluid {
+    background-color: #d9d9d9;
+    padding: 50px;
+  }
+
+  .form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+  }
+
+  .welcome-msg {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .signup-msg {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-weight: bold;
+  }
+
+  .btn-primary {
+    background-color: #cc4818;
+    border-color: #f8a435;
+  }
+
+  .btn-primary:hover {
+    background-color: #e9480d;
+    border-color: #f6871f;
+  }
+
+  .sign-in-link {
+    color: #c84086;
+    font-weight: bold;
+  }
+
+  .img-fluid {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 992px) {
+    .container-fluid {
+      padding: 20px;
+    }
+
+    .form-container {
+      width: 100%;
+      padding: 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .form-container {
+      width: 100%;
+      padding: 15px;
+    }
+
+    .welcome-msg {
+      font-size: 20px;
+    }
+
+    .signup-msg {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .btn-primary {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .form-container {
+      padding: 10px;
+    }
+
+    .welcome-msg {
+      font-size: 18px;
+    }
+
+    .signup-msg {
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .btn-primary {
+      padding: 8px;
+      font-size: 12px;
+    }
+  }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    function showValidationError(input, message) {
+      $(input).siblings('.error').text(message).css({
+        'color': 'red',
+        'list-style-type': 'none',
+        'padding': 0, // Reset padding
+        'margin': 0 // Reset margin
+      }).show();
+    }
+
+    function clearValidationError(input) {
+      $(input).siblings('.error').hide();
+    }
+
+    function validateField(fieldName, fieldValue) {
+      $.ajax({
+        url: '{% url "validate_register" %}',
+        method: 'POST',
+        data: {
+          'field_name': fieldName,
+          'field_value': fieldValue,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function (response) {
+          var inputSelector = '#' + fieldName.replace('_', '-');
+          if (response.valid) {
+            clearValidationError(inputSelector);
+          } else {
+            showValidationError(inputSelector, response.error);
+          }
+        }
+      });
+    }
+
+    $('input').on('input', function () {
+      var fieldName = $(this).attr('id').replace('-', '_');
+      var fieldValue = $(this).val();
+      validateField(fieldName, fieldValue);
+    });
+
+    $('#register-form').on('submit', function (event) {
+      event.preventDefault();
+      var formData = $(this).serialize();
+      $.ajax({
+        url: '{% url "register" %}',
+        method: 'POST',
+        data: formData,
+        success: function (response) {
+          if (response.success) {
+            swal("Success!", response.message, "success").then(() => {
+              window.location.href = "{% url 'my_otp' %}";
+            });
+          } else {
+            swal("Error!", response.message, "error");
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock content %}

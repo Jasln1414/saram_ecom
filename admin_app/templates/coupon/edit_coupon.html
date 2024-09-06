@@ -1,0 +1,115 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+{% block title %}
+<title>Edit Coupon</title>
+{% endblock title %}
+
+{% block style %}
+<style>
+    .text-nowrap {
+        white-space: nowrap !important;
+        padding-top: 24px;
+    }
+
+    input {
+        width: 100px;
+    }
+</style>
+{% endblock style %}
+
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row">
+        <div class="col-lg-12">
+            <form action="{% url 'edit_coupon' coupon.pk %}" method='post'>
+                {% csrf_token %}
+                <br><br>
+
+                <div class=">
+                    <div>
+                        <label for="exampleInputName" class="form-label">Coupon Code</label>
+                        <input type="text" required autocomplete="off" class="form-control"
+                            onkeydown="moveToNext(event, 'exampleInputName')" value="{{coupon.coupon_code}}"  name="coupon_code"
+                            placeholder="Coupon Code" id="exampleInputCode">
+                    </div>
+                    <br><br>
+                    <div>
+                        <label for="exampleInputName" class="form-label">Name</label>
+                        <input type="text" required autocomplete="off" class="form-control"
+                            onkeydown="moveToNext(event, 'exampleInputDiscount')" value="{{coupon.coupon_name}}"  name="name" placeholder="Name"
+                            id="exampleInputName">
+                    </div>
+                    <br><br>
+                    <div>
+                        <label for="exampleInputDiscount" class="form-label">Discount Percentage</label>
+                        <input type="number" required autocomplete="off" class="form-control"
+                            onkeydown="moveToNext(event, 'exampleInputMinAmount')" value="{{coupon.discount_percentage}}"  name="discount_percentage"
+                            placeholder="Discount Percentage" id="exampleInputDiscount">
+                    </div>
+                    <br><br>
+                    <div>
+                        <label for="exampleInputMinAmount" class="form-label">Minimum Amount</label>
+                        <input type="number" autocomplete="off" class="form-control"
+                            onkeydown="moveToNext(event, 'exampleInputMaxAmount')" value="{{coupon.minimum_amount}}"  name="minimum_amount"
+                            placeholder="Minimum Amount" id="exampleInputMinAmount">
+                    </div>
+                    <br><br>
+                    <div>
+                        <label for="exampleInputMaxAmount" class="form-label">Maximum Amount</label>
+                        <input type="number" autocomplete="off" class="form-control"
+                            onkeydown="moveToNext(event, 'exampleInputStartDate')" value="{{coupon.maximum_amount}}"  name="maximum_amount"
+                            placeholder="Maximum Amount" id="exampleInputMaxAmount">
+                    </div>
+                    <br><br>
+                    <div>
+                        <label for="exampleInputEndDate" class="form-label">End Date</label>
+                        <input type="date"  autocomplete="off" class="form-control"
+                            onkeydown="moveToNext(event, 'exampleInputSubmit')" value="{{coupon.expiry_date}}"  name="end_date"
+                            placeholder="End Date" id="exampleInputEndDate">
+                    </div>
+                    <br><br>
+                    <div>
+                        <label for="exampleInputMinAmount" class="form-label">Usage Limit</label>
+                        <input type="number" autocomplete="off" class="form-control"
+                            name="usage_limit" value="{{coupon.usage_limit}}" 
+                            placeholder="Usage Limit" id="exampleInputMinAmount">
+                    </div>
+                    <br><br>
+                    <button type="submit" class="btn btn-primary d-flex justify-content-end">Edit Coupon</button>
+                </div>
+            </form>
+            <br>
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+            <script>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                {% elif message.tags == 'success' %}
+                swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                {% else %}
+                swal("Message", "{{ message }}"); // Display general message
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </script>
+            <br />
+        </div>
+    </div>
+</div>
+<script>
+    function moveToNext(event, nextInputId) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            var nextInput = document.getElementById(nextInputId);
+            if (nextInput) {
+                nextInput.focus();
+            }
+        }
+    }
+</script>
+
+{% endblock content %}

@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 1s ease-out;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center">
+                           
+                                
+                            <h2>OTP Verification</h2>
+                            <p>Enter the OTP sent to your email.</p>
+                            <p style="color: #007bff;" class="email-display">{{email}}</p>
+                            <div class="timer" id="timer">02:00</div>
+                            <br>
+
+                        </div>
+                        <form action="{% url 'verify_otp' %}" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex ">
+                                <div class="form-group">
+                                    <input type="text" autocomplete="off" class="form-control text-center otp-input"
+                                        name="otp1" maxlength="1" required autofocus />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" autocomplete="off" class="form-control text-center otp-input"
+                                        name="otp2" maxlength="1" required autofocus />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" autocomplete="off" class="form-control text-center otp-input"
+                                        name="otp3" maxlength="1" required autofocus />
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" autocomplete="off" class="form-control text-center otp-input"
+                                        name="otp4" maxlength="1" required autofocus />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+                        </form>
+                        <br>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+                        <script>
+                            {% if messages %}
+                            {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                            {% elif message.tags == 'success' %}
+                            swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                            {% else %}
+                            swal("Message", "{{ message }}"); // Display general message
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </script>
+                        <br />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const timerDuration = 120; // Duration of the timer in seconds
+        // Function to format time (convert seconds to MM:SS format)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+        // Function to update the timer
+        function updateTimer() {
+            const timerElement = document.getElementById('timer');
+            let remainingTime;
+            // Check if timer state exists in local storage for the current user
+            const userId = '{{ request.session.session_key }}'; // Unique identifier for the user
+            const timerState = localStorage.getItem(`timerState_${userId}`);
+            if (timerState) {
+                remainingTime = parseInt(timerState);
+            } else {
+                remainingTime = timerDuration;
+            }
+            // Update the timer every second
+            const timerInterval = setInterval(() => {
+                timerElement.textContent = formatTime(remainingTime);
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = '00:00'; // Timer reached zero
+                    // Handle timer expiration here
+                } else {
+                    remainingTime -= 1;
+                    // Store remaining time in local storage for the current user
+                    localStorage.setItem(`timerState_${userId}`, remainingTime);
+                }
+            }, 1000);
+            // Remove timer state from local storage when the user navigates away from the OTP verification page
+            window.addEventListener('beforeunload', () => {
+                localStorage.removeItem(`timerState_${userId}`);
+            });
+        }
+
+        updateTimer();
+
+
+        // Get all OTP input fields
+        const otpInputs = document.querySelectorAll('.otp-input')
+
+        // Add event listeners to each OTP input field
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (event) => {
+                // Move to the next input field when typing
+                if (event.target.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus()
+                }
+            })
+
+            // Move to the previous input field when pressing backspace
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Backspace' && index > 0 && event.target.value.length === 0) {
+                    otpInputs[index - 1].focus()
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

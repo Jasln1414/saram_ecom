@@ -1,0 +1,168 @@
+{% extends "header.html" %}
+
+{% load static %}
+
+{% block content %}
+
+{% block title %}
+<title>Order</title>
+{% endblock title %}
+
+<head>
+    <script src="https://kit.fontawesome.com/83f31ed500.js" crossorigin="anonymous"></script>
+</head>
+{% block style %}
+<style>
+    /* Custom styling for the sorting dropdown */
+    .custom-select {
+        width: 230px;
+        margin-left: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 8px;
+        background-color: #fff;
+    }
+
+    /* Custom styling for the date inputs */
+    .date-inputs {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+
+    .date-input {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .date-input label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .date-input input[type="date"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .text-nowrap {
+        white-space: nowrap !important;
+        padding-top: 24px;
+    }
+
+    .custom-select {
+        /* Style the select element here */
+        border: 1px solid #ccc;
+        padding: 5px;
+        border-radius: 4px;
+    }
+
+    .custom-option {
+        /* Style the option elements here */
+        padding: 5px 10px;
+    }
+
+    input {
+        width: 100px;
+    }
+
+    #images {
+        width: 50px;
+        border-radius: 7px;
+    }
+</style>
+{% endblock style %}
+
+<div class="container-fluid">
+    <!-- Row 1 -->
+    <div class="row ">
+        <div class="col-lg-12 ">
+            <div class=" mb-3 mt-3">
+
+                <div class="d-flex justify-content-center">
+                    <h3>ORDER DETAIL</h3>
+
+                </div>
+
+            </div>
+        </div>
+        <br>
+       
+
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+        <script>
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+            {% elif message.tags == 'success' %}
+            swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+            {% else %}
+            swal("Message", "{{ message }}"); // Display general message
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </script>
+        <br />
+
+        <!-- User details table -->
+        <table class="table table-striped ">
+            <thead>
+                <tr>
+                    <th scope="col" style="display: flex; justify-content: center;">Order ID</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Payment Method</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in order_details %}
+                <tr>
+                    <td>{{ order.tracking_id }}
+                        <br>
+                    </td>
+                    <td>{{ order.customer.user.username }}</td>
+                    <td>₹{{order.total}}</td>
+
+                    <td> {{ order.payment_method }} </td>
+                    <td>
+                        <div class="">
+                            <form action="{% url 'admin_order' order.id %}">
+                                <button class="btn btn-outline-danger" type="submit"><i
+                                        class="fa-solid fa-file-lines"></i> View Details</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+</div>
+</div>
+
+</div>
+
+
+<script>
+    document.getElementById('sort-by').addEventListener('change', function () {
+        var sort_by = this.value;
+        var url = new URL(window.location.href);
+        url.searchParams.set('sort_by', sort_by);
+        window.location.href = url.toString();
+    });
+</script>
+
+
+
+{% endblock content %}

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<style>
+    .shop__cart__table {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .shop__cart__table table {
+        width: 100%;
+        min-width: 600px;
+        table-layout: auto;
+    }
+
+
+
+    .shop__cart__table th, .shop__cart__table td {
+        padding: 15px;
+        text-align: left;
+    }
+
+    .shop__cart__table tbody tr .cart__product__item {
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+
+    .shop__cart__table tbody tr .cart__price {
+        font-size: 16px;
+        color: #ca1515;
+        font-weight: 600;
+    }
+
+    .value-button {
+        display: inline-table;
+        margin: 0px;
+        width: 40px;
+        height: 25px;
+        text-align: center;
+        background: #ffffff;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .value-button:hover {
+        cursor: pointer;
+    }
+
+    input#number {
+        text-align: center;
+        border: white;
+        margin: 0px;
+        width: 40px;
+        height: 27px;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .shop__cart__table th, .shop__cart__table td {
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        .shop__cart__table tbody tr .cart__product__item img {
+            width: 40px;
+            height: 60px;
+        }
+    }
+</style>
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'index' %}"><i class="fa fa-home"></i> Home</a>
+                    <a href="">Wish List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    swal("Error!", "{{ message }}", "error");
+    {% elif message.tags == 'success' %}
+    swal("Success!", "{{ message }}", "success");
+    {% else %}
+    swal("Message", "{{ message }}");
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+</script>
+
+<!-- Shop Cart Section Begin -->
+<section class="shop-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="d-flex justify-content-center ">
+                    <h5><strong>WISH LIST</strong></h5>
+                </div>
+                <hr><br><br>
+                <div class="shop__cart__table">
+                    {% if wished_products %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sl</th>
+                                <th>Product</th>
+                                <th>Size</th>
+                                <th>Price</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in wished_products %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td class="cart__product__item">
+                                    <img style="width: 50px; height: 70px;" src="{{ item.product.image1.url }}" alt="">
+                                    <div class="cart__product__item__title">
+                                        <h6>{{ item.product.product.name }}</h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                    </div>
+                                </td>
+                                <form action="{% url 'add_to_cart' item.product.id %}" method="post">
+                                    <td>
+                                        <select name="size" id="size_{{ item.id }}">
+                                            {% for size in item.product.size.all %}
+                                            <option value="{{ size.size }}">{{ size.size }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td class="cart__price">₹ {{ item.product.product.offer_price }}.0</td>
+                                    {% csrf_token %}
+                                    {% if item.product.is_listed %}
+                                    <td class="cart__close">
+                                        <input value="1" name="quantity" type="hidden">
+                                        <button class="btn" type="submit"><i class="fas fa-cart-plus"></i></button>
+                                    </td>
+                                    {% else %}
+                                    <td><h6>The product is out of Stock</h6></td>
+                                    {% endif %}
+                                </form>
+                                <td class="cart__close">
+                                    <a href="{% url 'wishlist_del' item.id %}">
+                                        <span class="icon_close"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="d-flex justify-content-center">
+                        <h3>THERE IS NO PRODUCT IN WISH LIST</h3>
+                    </div>
+                    <hr><br><br>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="cart__btn">
+                    <a href="{% url 'shop_page' %}">Continue Shopping</a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="cart__btn update__btn">
+                    <a href=""><span class="icon_loading"></span> Update Wish List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shop Cart Section End -->
+
+{% endblock content %}

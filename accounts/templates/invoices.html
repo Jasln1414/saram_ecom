@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .invoice-details {
+            margin-bottom: 30px;
+        }
+
+        .invoice-details h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .invoice-details p {
+            margin: 5px 0;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .thank-you {
+            text-align: center;
+        }
+
+        /* Wrap long text */
+        .text-wrap {
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Company Info -->
+        <div class="company-info text-center">
+            <h2>SARAM</h2>
+            <h6>Email: Sarah@gmail.com</h6>
+            <p><strong>Seller:</strong> {{ seller_name }}</p>
+        </div>
+        
+        <!-- Invoice Title -->
+        <h1>Invoice</h1>
+        <hr>
+
+        <!-- Order and Customer Details -->
+        <div class="invoice-details">
+            <h2>Order Details</h2>
+            <p><strong>Order ID:</strong> {{ order_items.order.tracking_id }}</p>
+            <p><strong>Date:</strong> {{ order_items.order.created_at|date:"F d, Y" }}</p>
+            
+            <!-- Customer Details -->
+            <h2>Customer Details:</h2>
+            <p><strong>Name:</strong> {{ customer_details.first_name }} {{ customer_details.last_name }}</p>
+            <p><strong>Email:</strong> {{ customer_details.email }}</p>
+            <p><strong>Phone Number:</strong> {{ customer_details.phone_number }}</p>
+            <p><strong>Address:</strong> 
+               {{ customer_details.house_name }}, 
+               {{ customer_details.street_name }}, 
+               {{ customer_details.city }}, 
+               {{ customer_details.state }}, 
+               {{ customer_details.postal_code }}, 
+               {{ customer_details.country }}
+            </p>
+            
+        </div>
+
+        <!-- Order Item Table -->
+        <table class="table">
+            <thead class="thead-light">
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-wrap">{{ order_items.product.product.name }}</td>
+                    <td>{{ order_items.qty }}</td>
+                    <td>${{ order_items.product.product.offer_price }}</td>
+                    <td>${{ total }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="total">Total</td>
+                    <td class="total">${{ total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Thank You Note -->
+        <p class="thank-you">Thank you for your order!</p>
+    </div>
+</body>
+</html>

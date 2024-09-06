@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+{% block title %}
+
+<title>Edit Personal Info</title>
+
+{% endblock title %}
+
+{% block content %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<style>
+
+
+    .checkout__form__input p {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .checkout__form__input input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        transition: border-color 0.2s ease;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+    .path a {
+        margin-bottom: 5px;
+        color: #000;
+        text-decoration: none;
+    }
+
+    .path a:hover {
+        color: red;
+        transition-duration: 0.6s;
+    }
+
+    .path {
+        font-family: Montserrat, sans-serif;
+        font-size: 19px;
+        text-align: left;
+        margin-right: auto;
+        margin-top: 20px;
+        height: 500px;
+    }
+
+    .checkout__form__input input[type="date"] {
+        cursor: pointer;
+    }
+
+    /* Change cursor for gender radio buttons */
+    .gender-inputs input[type="radio"] {
+        cursor: pointer;
+    }
+
+    .col-lg-8 {
+        -ms-flex: 0 0 66.666667%;
+        flex: 0 0 66.666667%;
+        max-width: 100.666667%;
+    }
+</style>
+
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'index' %}"><i class="fa fa-home"></i> Home</a>
+                    <a href="{% url 'address' %}"><i></i> Address</a>
+                    <a href=" {% url 'add_address' %}"><i></i> Add Address</a>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Personal info Section Begin -->
+<section class=" checkout spad">
+                        <div class="container">
+
+                            <form action="" method="post" class="checkout__form">
+                                {% csrf_token %}
+
+                                <div class="row d-flex justify-content-end ">
+                                    <div class="path ">
+                                        <div class="l">
+                                            <a href="{% url 'profile' %}">Personal Information</a>
+                                        </div>
+                                        <p class="text-secondary text-muted">_________________________________________
+                                        </p>
+                                        <div>
+                                            <a href="{% url 'view_all_order' %}">My Orders</a>
+                                        </div>
+                                        <p class="text-secondary text-muted">_________________________________________
+                                        </p>
+
+                                        <div>
+                                            <a href="{% url 'address' %}" style="color: red;">Address</a>
+                                        </div>
+                                        <p class="text-secondary text-muted ">_________________________________________
+                                        </p>
+
+                                        <div>
+                                            <a href="{% url 'wallet_view' %}" style="color: red;">Wallet</a>
+                                        </div>
+                                        <p class="text-secondary text-muted">_________________________________________
+                                        </p>
+                                       
+
+                                    <div class="col-lg-8">
+
+                                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                                    </div>
+                                    </div>
+                        <script>
+                            {% if messages %}
+                            {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                            swal("Error!", "{{ message }}", "error"); // Display error message with a warning icon
+                            {% elif message.tags == 'success' %}
+                            swal("Success!", "{{ message }}", "success"); // Display success message with a success icon
+                            {% else %}
+                            swal("Message", "{{ message }}"); // Display general message
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </script>
+                                        <br />
+                                        <br>
+                                        <h5 class="d-flex justify-content-center">Add Address</h5>
+                                        <form action="{% url 'add_address' %}" method="post" class="checkout__form">
+                                            {% csrf_token %}
+                                            <div class="row d-flex justify-content-center">
+                                                <div class="col-lg-8">
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                                            <div class="checkout__form__input">
+                                                                <p>First Name <span>*</span></p>
+                                                                <input type="text" name="first_name" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                                            <div class="checkout__form__input">
+                                                                <p>Last Name <span>*</span></p>
+                                                                <input type="text" name="last_name" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12">
+                                                            <div class="checkout__form__input">
+                                                                <p>Email ID <span>*</span></p>
+                                                                <input type="email" name="email" required>
+                                                            </div>
+                                                            <div class="checkout__form__input">
+                                                                <p>Town/City <span>*</span></p>
+                                                                <input type="text" name="city" required>
+                                                            </div>
+                                                            
+                                                            <div class="checkout__form__input">
+                                                                <p>State <span>*</span></p>
+                                                                <input type="text" name="state" required>
+                                                            </div>
+                                                            <div class="checkout__form__input">
+                                                                <p>Country <span>*</span></p>
+                                                                <input type="text" name="country" required>
+                                                            </div>
+                                                            <div class="checkout__form__input">
+                                                                <p>Postcode/Zip <span>*</span></p>
+                                                                <input type="text" maxlength="6" name="postal_code" required>
+                                                            </div>
+                                                            <div class="checkout__form__input">
+                                                                <p>House Name <span>*</span></p>
+                                                                <input type="text" name="house_name" required>
+                                                            </div>
+                                                            <div class="checkout__form__input">
+                                                                <p>Mobile Number <span>*</span></p>
+                                                                <input type="text" maxlength="12" name="mobile_number" required>
+                                                            </div>
+                                                            <div class="d-flex justify-content-end">
+                                                                <button type="submit" class="btn btn-danger">Add Address</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+
+
+                                    </div>
+
+
+                                </div>
+                            </form>
+                        </div>
+                        </div>
+</section>
+                       
+                        <!-- Personal info Section End -->
+
+                        {% endblock content %}

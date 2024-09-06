@@ -1,0 +1,124 @@
+<h5 class="d-flex justify-content-center">Add Address</h5>
+
+<!-- Button to toggle the address form -->
+<div class="d-flex justify-content-center mb-3">
+    <button id="toggleAddressForm" class="btn btn-primary shiny-button">Add New Address</button>
+</div>
+
+<!-- Address form, initially hidden -->
+<div id="addressFormContainer" style="display: none;">
+    <form action="{% url 'add_address' %}" method="post" class="checkout__form">
+        {% csrf_token %}
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="checkout__form__input">
+                            <p>First Name <span>*</span></p>
+                            <input type="text" name="first_name" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="checkout__form__input">
+                            <p>Last Name <span>*</span></p>
+                            <input type="text" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="checkout__form__input">
+                            <p>Email ID <span>*</span></p>
+                            <input type="email" name="email" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Town/City <span>*</span></p>
+                            <input type="text" name="city" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>State <span>*</span></p>
+                            <input type="text" name="state" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Country <span>*</span></p>
+                            <input type="text" name="country" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Postcode/Zip <span>*</span></p>
+                            <input type="text" maxlength="6" name="postal_code" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>House Name <span>*</span></p>
+                            <input type="text" name="house_name" required>
+                        </div>
+                        <div class="checkout__form__input">
+                            <p>Mobile Number <span>*</span></p>
+                            <input type="text" maxlength="12" name="mobile_number" required>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success shiny-button">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<style>
+   /* Shiny button effect */
+.shiny-button {
+    background-color: #ff5733;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 87, 51, 0.5);
+}
+
+.shiny-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.7));
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+}
+
+.shiny-button:hover {
+    background-color: #e14b2d;
+    box-shadow: 0 5px 15px rgba(255, 87, 51, 0.8);
+}
+
+.shiny-button:hover::before {
+    top: -150%;
+    left: -150%;
+}
+
+.shiny-button:active {
+    background-color: #c43b24;
+    box-shadow: none;
+}
+ 
+</style>
+
+<script>
+    // JavaScript to toggle the display of the address form
+document.getElementById('toggleAddressForm').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent the default button action
+
+    var addressFormContainer = document.getElementById('addressFormContainer');
+
+    if (addressFormContainer.style.display === 'none' || addressFormContainer.style.display === '') {
+        addressFormContainer.style.display = 'block';  // Show the form
+        this.style.display = 'none'; // Hide the button after click
+    }
+});
+
+</script>

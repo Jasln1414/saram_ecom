@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+
+
+
+
+
+
+
+<style>
+    .container {
+    width: 100%;
+    max-width: 100%; /* Adjust to a smaller value if needed */
+    margin: 0 auto;
+    padding: ; /* Reduce padding if needed */
+    
+}
+    /* Container for all orders */
+    .orders-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px; /* Spacing between order items */
+        justify-content: center; /* Center align items */
+        padding: 15px;
+        width: auto;
+    }
+
+    /* Each order item */
+    .order-item {
+        flex: 1 1 calc(50% - 30px); /* 50% width minus gap spacing */
+        max-width: 400px; /* Maximum width of each item */
+        background: #f9f9f9; /* Light background for the order item */
+        border: 1px solid #ddd; /* Light border for separation */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin: 10px;
+        box-sizing: border-box; /* Include padding and border in element's total width and height */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .order-item:hover {
+        transform: scale(1.02); /* Slight zoom effect on hover */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .order-details {
+        padding: 1px; /* Padding for the inner content */
+    }
+
+    .product-details {
+        padding: 0 10px; /* No top padding, padding on left and right */
+    }
+
+    .order-status, .payment-status {
+        background: #0d66d3;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .order-status {
+        background: linear-gradient(135deg, #06e541, #08e08d);
+        border: 1px solid #dcdcdc;
+        color: #333;
+    }
+
+    .payment-status {
+        background: linear-gradient(135deg, #dd1fa4, #db0493);
+        border: 1px solid #dcdcdc;
+        color: #f8f4f4;
+    }
+
+    .retry-payment-btn {
+        background: linear-gradient(135deg, #f76c6c, #d9534f);
+        border: none;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s ease;
+    }
+
+    .retry-payment-btn:hover {
+        background: linear-gradient(135deg, #d9534f, #c9302c);
+    }
+
+    .btn-outline-secondary {
+        border: 1px solid #6c757d;
+        color: #6c757d;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background: #6c757d;
+        color: #fff;
+    }
+</style>
+
+
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="{% url 'index' %}"><i class="fa fa-home"></i> Home</a>
+                    <a href="{% url 'view_all_order' %}"><i></i> Orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Personal info Section Begin -->
+<section class="checkout spad">
+    <div class="container">
+        <form action="#" class="checkout__form">
+            <div class="row d-flex justify-content-end">
+                <div class="path">
+                    <div class="l">
+                        <a href="{% url 'profile' %}">Personal Information</a>
+                    </div>
+                    <p class="text-secondary text-muted">_________________________________________</p>
+                    <div>
+                        <a href="{% url 'view_all_order' %}" style="color: red;">My Orders</a>
+                    </div>
+                    <p class="text-secondary text-muted">_________________________________________</p>
+                    <div>
+                        <a href="{% url 'address' %}">Address</a>
+                    </div>
+                    <p class="text-secondary text-muted">_________________________________________</p>
+                    <div>
+                        <a href="{% url 'wallet_view' %}">Wallet</a>
+                    </div>
+                    <p class="text-secondary text-muted">_________________________________________</p>
+                    <div>
+                        <a href="{% url 'referral' %}" id="changePasswordBtn">Referral</a>
+                    </div>
+                    <p class="text-secondary text-muted">_________________________________________</p>
+                </div>
+                <div class="col-lg-8">
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+                    <script>
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        swal("Error!", "{{ message }}", "error");
+                        {% elif message.tags == 'success' %}
+                        swal("Success!", "{{ message }}", "success");
+                        {% else %}
+                        swal("Message", "{{ message }}");
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </script>
+                    <br>
+
+
+                   
+
+
+                    <h5 class="d-flex justify-content-center">MY ORDERS</h5>
+<div class="orders-container">
+    {% if orders %}
+        {% for order in orders %}
+        <div class="order-item">
+            <div class="order-overview">
+                <div class="order-details">
+                    <div class="d-flex justify-content-between">
+                        <span class="order-id">Order ID: <br> {{ order.tracking_id }}</span>
+                        {% if order.status != "Payment Failed" %}
+                            <a href="{% url 'view_order' order.id %}" class="btn btn-outline-secondary">View details</a>
+                        {% else %}
+                            <button class="retry-payment-btn" data-order-id="{{ order.id }}" data-amount="{{ order.total }}" data-razorpay-order-id="{{ order.razorpay_order_id }}">Retry Payment</button>
+                        {% endif %}
+                    </div>
+                    <hr>
+                    <div class="product-details">
+                        <span class="total-price">Total: ₹{{ order.total }}</span><br>
+                        <span class="order-date">Order Date: {{ order.created_at }}</span><br>
+                        <div class="order-status">
+                            {% if order.status != "Payment Failed" %}
+                                {% if order.status == "Returned" and order.is_refunded %}
+                                    <span>Order Status: Returned, Refunded</span>
+                                {% elif order.status == "Returned" %}
+                                    <span>Order Status:Returned & Refunded</span>
+                                {% elif order.is_refunded %}
+                                    <span>Order Status: Refunded</span>
+                                {% else %}
+                                    <span>Order Status: {{ order.status }}</span>
+                                {% endif %}
+                            {% else %}
+                                <span>Order Status: Payment Failed</span>
+                            {% endif %}
+                        </div>
+                        <div class="payment-status">
+                            Payment method: {{ order.payment_method }}
+                        </div>
+                        {% if order.coupon_applied %}
+                            <span class="coupon-details">Coupon: {{ order.coupon_name }}, Discounted Price: ₹{{ order.discounted_price }}</span><br>
+                        {% endif %}
+                        {% for address in order_addresses %}
+                            {% if address.order_id == order.id %}
+                                <span class="address-details">Address: {{ address.house_name }}, {{ address.first_name }}</span><br>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="d-flex justify-content-center">
+            <h5><b>YOU HAVEN'T ORDERED ANYTHING YET.</b></h5>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Personal info Section End -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    function retryPayment(orderId, amount, razorpayOrderId) {
+        var options = {
+            "key": "rzp_test_i5YPKuq85Rzcc0", // Replace with your Razorpay key ID
+
+            "amount": amount * 100, // Amount
+        }
+    }
+        </script>
+
+<!-- Personal info Section End -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    function retryPayment(orderId, amount, razorpayOrderId) {
+        var options = {
+            "key": "rzp_test_i5YPKuq85Rzcc0", // Replace with your Razorpay key ID
+            "amount": amount * 100, // Amount in paise
+            "currency": "INR",
+            "name": "Sarahm",
+            "description": "Retry Payment",
+            "order_id": razorpayOrderId, // Razorpay order ID
+            "handler": function (response) {
+                console.log("Payment Handler Response:", response); // Log response for debugging
+                $.ajax({
+                    url: "{% url 'retry_payment' %}",
+                    method: "POST",
+                    data: {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        order_id: orderId
+                    },
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            swal("Success!", "Payment successful.", "success")
+                                .then(() => {
+                                    window.location.reload();
+                                });
+                        } else {
+                            swal("Error!", response.message || "Payment failed. Please try again.", "error");
+                        }
+                    }
+                });
+            },
+            "theme": {
+                "color": "#ca1515"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.retry-payment-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                var orderId = this.dataset.orderId;
+                var amount = this.dataset.amount;
+                var razorpayOrderId = this.dataset.razorpayOrderId;
+                retryPayment(orderId, amount, razorpayOrderId);
+            });
+        });
+    });
+</script>
+
+
+
+{% endblock content %}
