@@ -106,10 +106,13 @@ MIDDLEWARE = [
    
 
 ]
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000',  # Update with your front-end URL
-    'http://127.0.0.1:8000',  # Add more origins as needed
-]
+
+ALLOWED_HOSTS = ["*"]
+
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:8000',  # Update with your front-end URL
+#     'http://127.0.0.1:8000',  # Add more origins as needed
+# ]
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'ecommerse.urls'
