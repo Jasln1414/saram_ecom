@@ -155,21 +155,35 @@
     </div>
 </section>
 <!-- Product Section End -->
+<style>
+  .d-flex {
+    display: flex;
+}
 
+.same-height {
+    flex: 1;  /* Ensures both divs take equal width if needed */
+    display: flex;
+    flex-direction: column; /* Allows the content inside to flow vertically */
+}
+.discount__text {
+  height: 528px;
+}
+
+</style>
 <!-- Discount Section Begin -->
 <section class="discount">
   <div class="container">
     <div class="row">
-      <div class="col-lg-6 p-0">
+      <div class="col-lg-6 p-0 same-height">
         <div class="discount__pic">
           <img src="{% static 'img/discount.jpg' %}" alt="" />
         </div>
       </div>
-      <div class="col-lg-6 p-0">
+      <div class="col-lg-6 p-0 same-height">
         <div class="discount__text">
           <div class="discount__text__title">
             <span>Discount</span>
-            <h2>Summer 2019</h2>
+            <h2>Summer 2024</h2>
             <h5><span>Sale</span> 50%</h5>
           </div>
           <div class="discount__countdown" id="countdown-time">
@@ -195,6 +209,7 @@
       </div>
     </div>
   </div>
+  
 </section>
 <!-- Discount Section End -->
 

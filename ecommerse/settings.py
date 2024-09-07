@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-lzk9&-+rd44n*vv*-i1vn=99+dth+z^8cc30eq70q_vygxf+yc'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool, default=True)
 
 ALLOWED_HOSTS = []
 # settings.py
@@ -140,17 +142,19 @@ WSGI_APPLICATION = 'ecommerse.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+from decouple import config
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        #'NAME': 'ECOMMERSE-SARAM-PROJECT',
-        'NAME': 'Ecommerse-proje',
-        'USER': 'postgres',
-        'PASSWORD': 'ramy2008',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config('DATABASE_NAME', default='default_db_name'),
+        'USER': config('DATABASE_USER', default='default_user'),
+        'PASSWORD': config('DATABASE_PASSWORD', default='default_password'),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
     }
 }
+
 
 
 
@@ -184,8 +188,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-RAZORPAY_KEY_ID = 'rzp_test_NmPoflo9tPavEe'
-RAZORPAY_KEY_SECRET = 'akelaES6a7u5dR8sYbK3zDxW'
+from decouple import config
+
+RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -198,16 +205,20 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 # settings.py
 
-STATICFILES_DIRS = [
-   # 'D:/Sarahm/ecommerse/static',  # Correct this path if needed
-]
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# Include static directories from all apps
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "/static"),
+    os.path.join(BASE_DIR, "cart_app/static"),  # Replace 'app_name' with the actual app name
+    os.path.join(BASE_DIR, "accounts/static"),  # Repeat for other apps
+     os.path.join(BASE_DIR, "admin_app/static"),  # Repeat for other apps
+
+
+
 ]
 
 
@@ -219,15 +230,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ramsarahbcr61@gmail.com'
-EMAIL_HOST_PASSWORD = 'ycud haai crii kxlo'
-EMAIL_DEBUG = True
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_DEBUG = config('EMAIL_DEBUG', default=False, cast=bool)
+
+# Default auto field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 
 # settings.py
 SOCIALACCOUNT_LOGIN_ON_GET = True
