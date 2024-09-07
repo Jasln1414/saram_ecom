@@ -205,16 +205,20 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 # settings.py
 
-STATICFILES_DIRS = [
-   # 'D:/Sarahm/ecommerse/static',  # Correct this path if needed
-]
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# Include static directories from all apps
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "/static"),
+    os.path.join(BASE_DIR, "cart_app/static"),  # Replace 'app_name' with the actual app name
+    os.path.join(BASE_DIR, "accounts/static"),  # Repeat for other apps
+     os.path.join(BASE_DIR, "admin_app/static"),  # Repeat for other apps
+
+
+
 ]
 
 
@@ -226,15 +230,21 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ramsarahbcr61@gmail.com'
-EMAIL_HOST_PASSWORD = 'ycud haai crii kxlo'
-EMAIL_DEBUG = True
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_DEBUG = config('EMAIL_DEBUG', default=False, cast=bool)
+
+# Default auto field
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
 
 # settings.py
 SOCIALACCOUNT_LOGIN_ON_GET = True

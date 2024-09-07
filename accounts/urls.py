@@ -29,7 +29,7 @@ urlpatterns = [
     
 
 
-    path("search_pro/", views.search_pro, name="search_pro"),
+   
     path("filtered_products_cat/",views.filtered_products_cat,name="filtered_products_cat",),
     path('filter/', views.product_filter_view, name='product_filter'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
@@ -49,7 +49,7 @@ urlpatterns = [
 
 
 
-    #path('change_password/',views. change_password, name='change_password'),
+   
 
 
  

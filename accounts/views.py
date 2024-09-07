@@ -1109,19 +1109,8 @@ def referral(request):
         return redirect("login")
 
 
-def search_pro(request):
-    try:
-        if request.method == "POST":
-            query = request.POST.get("query")
-            products_color = ProductColorImage.objects.filter(
-                product__is_deleted=False, product__name__icontains=query
-            )
 
-            context = {"products_color": products_color, "query": query}
-            return render(request, "search.html", context)
-    except Exception as e:
-        messages.error(request, "Something went wrong please try again.")
-        return redirect("index")
+
 
 
 def invoice(request, product_id):
@@ -1130,8 +1119,29 @@ def invoice(request, product_id):
         user = Customer.objects.get(user=request.user)
         order_items = OrderItem.objects.get(id=product_id, order__customer=user)
 
-        # Calculate the total price of the order
-        total = order_items.product.product.offer_price * order_items.qty
+        # Calculate the subtotal of the order
+        sub_total = order_items.product.product.offer_price * order_items.qty
+        
+        # Initialize discount and shipping fee
+        discount_amount = 0
+        shipping_fee = 0
+
+        # Fetch the order to check if any coupon was applied
+        order = order_items.order
+        if order.coupon_name:
+            try:
+                coupon = Coupon.objects.get(coupon_name=order.coupon_name, is_active=True)
+                if coupon:
+                    discount_amount = (sub_total * coupon.discount_percentage) / 100
+            except Coupon.DoesNotExist:
+                discount_amount = 0
+
+        # Apply shipping fee logic (this is an example; adjust as needed)
+        cart_qty = order_items.qty
+        shipping_fee = 0 if cart_qty > 5 else 99  # Free shipping if cart_qty > 5
+
+        # Calculate final total
+        total = sub_total - discount_amount + shipping_fee
 
         # Fetch the address associated with the user (assuming one address per user)
         try:
@@ -1149,7 +1159,7 @@ def invoice(request, product_id):
                 "phone_number": address.phone_number,
             }
         except Address.DoesNotExist:
-            address_details = {}  # Handle case where no address is found
+            address_details = {}
 
         # Define the seller's name
         seller_name = "SARAM"
@@ -1157,8 +1167,11 @@ def invoice(request, product_id):
         # Create the context for rendering the template
         context = {
             "order_items": order_items,
+            "sub_total": sub_total,
+            "discount_amount": discount_amount,
+            "shipping_fee": shipping_fee,
             "total": total,
-            "customer_details": address_details,  # Pass the address details
+            "customer_details": address_details,
             "seller_name": seller_name,
         }
 
@@ -1178,4 +1191,3 @@ def invoice(request, product_id):
         return response
     else:
         return redirect("login")
-
