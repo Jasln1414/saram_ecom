@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool, default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 # settings.py
 
 # Time zone settings
@@ -108,7 +108,6 @@ MIDDLEWARE = [
 
 ]
 
-ALLOWED_HOSTS = ["*"]
 
 # CORS_ALLOWED_ORIGINS = [
 #     'http://localhost:8000',  # Update with your front-end URL
@@ -145,8 +144,6 @@ WSGI_APPLICATION = 'ecommerse.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-from decouple import config
 
 DATABASES = {
     'default': {
@@ -192,8 +189,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-from decouple import config
-
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET')
 
@@ -209,8 +204,6 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 # settings.py
 
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
