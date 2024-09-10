@@ -57,7 +57,8 @@ SITE_ID = 2
 
 
 # Application definition
-SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+# SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
+# SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
