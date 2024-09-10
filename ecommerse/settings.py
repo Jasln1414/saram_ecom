@@ -212,7 +212,7 @@ LOGOUT_REDIRECT_URL = "/"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Include static directories from all apps
 STATICFILES_DIRS = [
@@ -251,6 +251,18 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # settings.py
 SOCIALACCOUNT_LOGIN_ON_GET = True
+"""[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/saram   # Path to your project directory
+ExecStart=/home/ubuntu/saram/myenv/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/saram/myproject.sock myproject.wsgi:application
+
+[Install]
+WantedBy=multi-user.target"""
 
 
 
