@@ -1110,8 +1110,92 @@ def referral(request):
 
 
 
+def invoice(request, product_id):
+    if request.user.is_authenticated:
+        try:
+            # Fetch the current customer and their related order items
+            user = Customer.objects.get(user=request.user)
+            order_items = OrderItem.objects.get(id=product_id, order__customer=user)
+
+            # Calculate the subtotal of the order
+            sub_total = order_items.product.product.offer_price * order_items.qty
+
+            # Initialize discount and shipping fee
+            discount_amount = 0
+            shipping_fee = 0
+
+            # Fetch the order to check if any coupon was applied
+            order = order_items.order
+            if order.coupon_name:
+                try:
+                    coupon = Coupon.objects.get(coupon_name=order.coupon_name, is_active=True)
+                    discount_amount = (sub_total * coupon.discount_percentage) / 100
+                except Coupon.DoesNotExist:
+                    discount_amount = 0
+
+            # Apply shipping fee logic
+            cart_qty = order_items.qty
+            shipping_fee = 0 if cart_qty > 5 else 99
+
+            # Calculate final total
+            total = sub_total - discount_amount + shipping_fee
+
+            # Fetch the address associated with the user
+            address = Address.objects.get(user=request.user, is_deleted=False)
+
+            # Define the seller's name
+            seller_name = "SARAM"
+
+            # Create the context for rendering the template
+            context = {
+                "order_items": order_items,
+                "sub_total": sub_total,
+                "discount_amount": discount_amount,
+                "shipping_fee": shipping_fee,
+                "total": total,
+                "customer_details": {
+                    "first_name": address.first_name,
+                    "last_name": address.last_name,
+                    "email": address.email,
+                    "house_name": address.house_name,
+                    "street_name": address.street_name,
+                    "city": address.city,
+                    "state": address.state,
+                    "postal_code": address.postal_code,
+                    "country": address.country,
+                    "phone_number": address.phone_number,
+                },
+                "seller_name": seller_name,
+            }
+
+            # Render the invoice HTML with the context data
+            html_string = render_to_string("invoices.html", context)
+
+            # Define the correct path for wkhtmltopdf based on your environment
+            if request.META['HTTP_HOST'].startswith('3.138.142.100'):
+                path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # For the server (Linux)
+            else:
+                path_to_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"  # For local Windows
+
+            config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+
+            # Generate the PDF from the rendered HTML string
+            pdf = pdfkit.from_string(html_string, False, configuration=config)
+
+            # Create the HTTP response to serve the PDF file
+            response = HttpResponse(pdf, content_type="application/pdf")
+            response["Content-Disposition"] = 'filename="invoice.pdf"'
+
+            return response
+
+        except (OrderItem.DoesNotExist, Address.DoesNotExist):
+            return HttpResponse("Error generating invoice. Please ensure all data is correct.")
+    else:
+        return redirect("login")
 
 
+
+"""import pdfkit
 
 def invoice(request, product_id):
     if request.user.is_authenticated:
@@ -1191,3 +1275,11 @@ def invoice(request, product_id):
         return response
     else:
         return redirect("login")
+import pdfkit
+
+# Define the path to wkhtmltopdf
+path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'
+config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
+
+# Generate PDF with the correct configuration
+pdfkit.from_url('http://example.com', 'output.pdf', configuration=config)"""

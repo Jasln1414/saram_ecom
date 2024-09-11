@@ -210,9 +210,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Include static directories from all apps
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "cart_app/static"),  # Replace 'app_name' with the actual app name
-    os.path.join(BASE_DIR, "accounts/static"),  # Repeat for other apps
-     os.path.join(BASE_DIR, "admin_app/static"),  # Repeat for other apps
+    os.path.join(BASE_DIR, "cart_app/static"),
+    os.path.join(BASE_DIR, "accounts/static"),
+     os.path.join(BASE_DIR, "admin_app/static"), 
 
 
 
