@@ -1112,6 +1112,9 @@ def referral(request):
 
 
 
+import pdfkit
+
+
 def invoice(request, product_id):
     if request.user.is_authenticated:
         try:
@@ -1173,12 +1176,17 @@ def invoice(request, product_id):
             # Render the invoice HTML with the context data
             html_string = render_to_string("invoices.html", context)
 
-            # Define the correct path for wkhtmltopdf based on your environment
-            path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # For the server (Linux)
+            # Determine path to wkhtmltopdf
+            if 'HTTP_HOST' in request.META and request.META['HTTP_HOST'].startswith('3.138.142.100'):
+                path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # For the server (Linux)
+            else:
+                path_to_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"  # For local Windows
 
+            print(f"Using wkhtmltopdf path: {path_to_wkhtmltopdf}")  # Add this line for debugging
+            
             # Configure pdfkit with the correct path to wkhtmltopdf
             config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
-            
+
             # Generate the PDF from the rendered HTML string
             pdf = pdfkit.from_string(html_string, False, configuration=config)
 
@@ -1193,7 +1201,6 @@ def invoice(request, product_id):
             return HttpResponse("Error generating invoice. Please ensure all data is correct.")
     else:
         return redirect("login")
-
 
 
 
