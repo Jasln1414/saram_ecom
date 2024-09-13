@@ -57,7 +57,11 @@ USE_L10N = True
 USE_I18N = True
 
 
+<<<<<<< Updated upstream
 SITE_ID = 3 # Replace with the correct site ID if it's not 1
+=======
+SITE_ID = 3
+>>>>>>> Stashed changes
 
 
 
