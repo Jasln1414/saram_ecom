@@ -1110,12 +1110,14 @@ def referral(request):
 
 
 
+
+
 def invoice(request, product_id):
     if request.user.is_authenticated:
         try:
             # Fetch the current customer and their related order items
-            user = Customer.objects.get(user=request.user)
-            order_items = OrderItem.objects.get(id=product_id, order__customer=user)
+            user = get_object_or_404(Customer, user=request.user)
+            order_items = get_object_or_404(OrderItem, id=product_id, order__customer=user)
 
             # Calculate the subtotal of the order
             sub_total = order_items.product.product.offer_price * order_items.qty
@@ -1141,7 +1143,7 @@ def invoice(request, product_id):
             total = sub_total - discount_amount + shipping_fee
 
             # Fetch the address associated with the user
-            address = Address.objects.get(user=request.user, is_deleted=False)
+            address = get_object_or_404(Address, user=request.user, is_deleted=False)
 
             # Define the seller's name
             seller_name = "SARAM"
@@ -1172,26 +1174,26 @@ def invoice(request, product_id):
             html_string = render_to_string("invoices.html", context)
 
             # Define the correct path for wkhtmltopdf based on your environment
-            if request.META['HTTP_HOST'].startswith('3.138.142.100'):
-                path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # For the server (Linux)
-            else:
-                path_to_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"  # For local Windows
+            path_to_wkhtmltopdf = '/usr/bin/wkhtmltopdf'  # For the server (Linux)
 
+            # Configure pdfkit with the correct path to wkhtmltopdf
             config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
-
+            
             # Generate the PDF from the rendered HTML string
             pdf = pdfkit.from_string(html_string, False, configuration=config)
 
             # Create the HTTP response to serve the PDF file
             response = HttpResponse(pdf, content_type="application/pdf")
-            response["Content-Disposition"] = 'filename="invoice.pdf"'
+            response["Content-Disposition"] = 'attachment; filename="invoice.pdf"'
 
             return response
 
-        except (OrderItem.DoesNotExist, Address.DoesNotExist):
+        except (OrderItem.DoesNotExist, Address.DoesNotExist) as e:
+            # Log the exception or handle it as needed
             return HttpResponse("Error generating invoice. Please ensure all data is correct.")
     else:
         return redirect("login")
+
 
 
 
