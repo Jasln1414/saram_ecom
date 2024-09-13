@@ -12,7 +12,12 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import site
 from decouple import config
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerse.settings')
+application = get_wsgi_application()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -52,7 +57,7 @@ USE_L10N = True
 USE_I18N = True
 
 
-SITE_ID = 2
+SITE_ID = 3 # Replace with the correct site ID if it's not 1
 
 
 
@@ -245,19 +250,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # settings.py
 SOCIALACCOUNT_LOGIN_ON_GET = True
-"""[Unit]
-Description=gunicorn daemon
-After=network.target
-
-[Service]
-User=ubuntu
-Group=www-data
-WorkingDirectory=/home/ubuntu/saram   # Path to your project directory
-ExecStart=/home/ubuntu/saram/myenv/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/saram/myproject.sock myproject.wsgi:application
-
-[Install]
-WantedBy=multi-user.target"""
-
+# settings.py
+#CSRF_TRUSTED_ORIGINS = ['https://*.razorpay.com', 'https://saram.site',' http://127.0.0.1:8000']
+#CORS_ALLOWED_ORIGINS = ['https://saram.site',' http://127.0.0.1:8000']
 
 
 
