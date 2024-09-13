@@ -14,14 +14,15 @@ from pathlib import Path
 import os
 import site
 from decouple import config
-from django.core.wsgi import get_wsgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerse.settings')
-application = get_wsgi_application()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# settings.py
+
+PDFKIT_CONFIG = {
+    'wkhtmltopdf': '/usr/bin/wkhtmltopdf',
+}
 
 
 # Quick-start development settings - unsuitable for production
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',

@@ -1186,7 +1186,7 @@ def invoice(request, product_id):
             
             # Configure pdfkit with the correct path to wkhtmltopdf
             config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
-
+            pdfkit.from_url('http://google.com', 'out.pdf', configuration=config)
             # Generate the PDF from the rendered HTML string
             pdf = pdfkit.from_string(html_string, False, configuration=config)
 
