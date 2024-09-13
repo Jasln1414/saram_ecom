@@ -14,6 +14,10 @@ from pathlib import Path
 import os
 import site
 from decouple import config
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerse.settings')
+application = get_wsgi_application()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
