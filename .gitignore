@@ -25,4 +25,7 @@ staticfiles/
 *.egg-info/
 dist/
 build/
+# .gitignore
+eval.sh
+eval.sh.pub
 
