@@ -16,8 +16,6 @@ import site
 from decouple import config
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerse.settings')
-application = get_wsgi_application()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -56,12 +54,7 @@ DATETIME_FORMAT = 'Y-m-d H:i:s'
 USE_L10N = True
 USE_I18N = True
 
-
-<<<<<<< Updated upstream
-SITE_ID = 3 # Replace with the correct site ID if it's not 1
-=======
 SITE_ID = 3
->>>>>>> Stashed changes
 
 
 
@@ -78,8 +71,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'admin_app',
-    'cart_app',
-    "crispy_forms",
+    'cart_app',    "crispy_forms",
     "crispy_bootstrap4",
     'django.contrib.sites',
     'allauth',
