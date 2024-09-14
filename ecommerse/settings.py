@@ -255,25 +255,3 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 # settings.py
 #CSRF_TRUSTED_ORIGINS = ['https://*.razorpay.com', 'https://saram.site',' http://127.0.0.1:8000']
 #CORS_ALLOWED_ORIGINS = ['https://saram.site',' http://127.0.0.1:8000']
-"""Your public key has been saved in eval "$(ssh-agent -s)".pub
-The key fingerprint is:
-SHA256:DgAyahZl2gGBZWrJXIHx3CVC1flVlqPAz9TEAfZ1/Cc jaseela1414@gmail.com
-The key's randomart image is:
-+--[ED25519 256]--+
-|+*@Ooo..o  o*=oo.|
-|=*X.+ oo o.oo=. o|
-|oO +..  . * ... .|
-|+    .   . +  E o|
-|      . S      ..|
-|       o         |
-|        .        |
-|                 |
-|                 |
-+----[SHA256]-----+"""""
-
-"""(saram_env) ubuntu@ip-172-31-28-4:~/saram$ cat ~/.ssh/id_ed25519.pub
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOOpe4r1mkpEehtARB1W0rC5NBxGVMfC4QK7Vk2te8qK jaseela1414@gmail.com"""
-
-
-
-
