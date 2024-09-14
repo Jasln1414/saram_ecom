@@ -1115,6 +1115,8 @@ def referral(request):
 import pdfkit
 
 
+
+
 def invoice(request, product_id):
     if request.user.is_authenticated:
         try:
@@ -1182,11 +1184,11 @@ def invoice(request, product_id):
             else:
                 path_to_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"  # For local Windows
 
-            print(f"Using wkhtmltopdf path: {path_to_wkhtmltopdf}")  # Add this line for debugging
+            print(f"Using wkhtmltopdf path: {path_to_wkhtmltopdf}")  # Debugging line
             
             # Configure pdfkit with the correct path to wkhtmltopdf
             config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
-            pdfkit.from_url('http://google.com', 'out.pdf', configuration=config)
+
             # Generate the PDF from the rendered HTML string
             pdf = pdfkit.from_string(html_string, False, configuration=config)
 
